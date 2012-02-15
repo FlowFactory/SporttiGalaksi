@@ -1,12 +1,11 @@
 /* SporttiGalaksi GameController */
 
-(function($) {
+ (function($) {
 
     //==============================================================================
     // VARIABLES = Union & PhoneGap & GameController
     //==============================================================================
-
-	// user object for user vars
+    // user object for user vars
     var User = {};
 
     // union vars
@@ -29,76 +28,58 @@
     var watchID = null;
 
     //==============================================================================
-    // FORM ACTIONS
+    // FORM VALIDATION
     //==============================================================================
 
-    $('form').live('submit', function(event) {
-	    // prevent default action which causes "undefined" page 
+    //==============================================================================
+    // FORM ACTIONS
+    //==============================================================================
+    $('form').live('submit',
+    function(event) {
+        // prevent default action which causes "undefined" page
         event.preventDefault();
     });
 
     // submit form
-    $('button').live('click tap', function(event) {
+    $('button').live('click tap',
+    function(event) {
 
         // get form values
         var $form = $(event.target).closest('form'),
-          $url = $form.attr('action'),
-          $action = $(event.target).val();
+        $url = $form.attr('action'),
+        $action = $(event.target).val();
 
-		// if join action
-        if ($action == 'join') {
-
-            $.ajax({
-                type: 'POST',
-                url: $url,
-                data: $form.serialize(),
-                dataType: 'xml',
-                cache: false,
-                beforeSend: function() {
-					// show loader spinner
-                    $.mobile.showPageLoadingMsg();
-                },
-                error: function() {
-                    $('#progress').empty().append('<li data-theme="e" data-role="content">Virhe! Verkkovirhe liityttäessä peliin</div>');
-                    $('#progress').listview('refresh').bind('click tap', function(event) { $(this).empty(); });
-                },
-                success: function(data) {
-                    // xml data var
-                    var $xml = $(data);
-
-                    if ($xml.text() == 0) { 
-						// 0 as xml value means that auth went wrong 
-                        $('#progress').empty().append('<li data-theme="e" data-role="content">Käyttäjätunnus tai salasana oli virheellinen.</div>');
-                        $('#progress').listview('refresh').bind('click tap', function(event) { $(this).empty(); });
-                    } else if ($xml.text() == 1) {
-						// 1 as xml value means that auth ok
-						
-						// user information from xml var
-                        var $user = $xml.find('user');
-						// set user info to User obj
-                        User.username = $user.attr('username');
-                        User.nickname = $user.attr('nickname');
-                        User.user_id = $user.attr('id');
-
-                        // union init
-                        init();
-
-                    } else {
-						// xml is not readable so probably something wrong with sportti server or there is some connection problem
-                        $('#progress').empty().append('<li data-theme="e" data-role="content">Virhe! Verkkovirhe liityttäessä peliin</div>');
-                        $('#progress').listview('refresh').bind('click tap', function(event) { $(this).empty(); });
-                    }
-                },
-                complete: function() {
-					// hide loader window
-                    $.mobile.hidePageLoadingMsg();
+        // from validation
+        $("form").validate({
+            rules: {
+                username: "required",
+                passcode: "required",
+                roomid: {
+                    required: true,
+                    number: true
                 }
-            });
-
-        }
-        // join
-        else if ($action == 'leave') {
-			// if action is leave > call the general leave() action
+            },
+            messages: {
+                username: "Käyttäjätunnus on pakollinen",
+                passcode: "Salasana on pakollinen",
+                roomid: {
+                    required: "Pelihuoneen tunnus on pakollinen",
+                    number: "Pelihuoneen tunnus pitää olla numero"
+                }
+            },
+            submitHandler: function() {
+              join($url, $form);
+            }
+            // invalidHandler: function() { alert("Invalid!") }
+        });
+        
+        // trigger form validation if join event
+        if ($action == 'join') {
+          $form.submit();
+        } 
+        
+        if ($action == 'leave') {
+            // if action is leave > call the general leave() action
             leave();
         }
 
@@ -109,13 +90,14 @@
     //==============================================================================
     // INITIALIZATION
     //==============================================================================
-    
     // Wait for PhoneGap to load function onLoad() { document.addEventListener("deviceready", onDeviceReady, false); }
-
-	// PhoneGap is ready function onDeviceReady() { init(); }
+    // PhoneGap is ready function onDeviceReady() { init(); }
     function init() {
         $('#progress').empty().append('<li data-theme="b" data-role="content">Liitytään peliin.</div>');
-        $('#progress').listview('refresh').bind('click tap', function(event) { $(this).empty(); });
+        $('#progress').listview('refresh').bind('click tap',
+        function(event) {
+            $(this).empty();
+        });
 
         roomID = $('#roomid').val();
 
@@ -129,8 +111,7 @@
         // Register for incoming messages from Union
         msgManager = orbiter.getMessageManager();
 
-		// TODO event kuuntelu jos huonetta ei ole
-
+        // TODO event kuuntelu jos huonetta ei ole
         // Connect to Union
         orbiter.connect("socket.dreamschool.fi", 443);
     }
@@ -138,8 +119,7 @@
     //==============================================================================
     // ORBITER EVENT LISTENERS
     //==============================================================================
-    
-	// Triggered when the connection is ready
+    // Triggered when the connection is ready
     function readyListener(e) {
         UPC = net.user1.orbiter.UPC;
         msgManager.addMessageListener(UPC.JOINED_ROOM, joinedRoomListener, this);
@@ -149,7 +129,7 @@
         msgManager.sendUPC(UPC.JOIN_ROOM, roomID);
     }
 
-	// Triggered when the connection is closed
+    // Triggered when the connection is closed
     function closeListener(e) {
         leave();
     }
@@ -157,8 +137,7 @@
     //==============================================================================
     //  ROOM EVENT LISTENER
     //==============================================================================
-    
-	// Triggered when a JOINED_ROOM message is received
+    // Triggered when a JOINED_ROOM message is received
     function joinedRoomListener() {
         // set user´s information
         var userinfo = User.user_id + ';' + User.username + ';' + User.nickname;
@@ -166,9 +145,12 @@
         // send user´s information
         msgManager.sendUPC(UPC.SET_CLIENT_ATTR, orbiter.getClientID(), "", "USERINFO", userinfo, roomID, "4");
 
-		// show message in UI
+        // show message in UI
         $('#progress').empty().append('<li data-theme="b" data-role="content">Liityit peliin.</div>');
-        $('#progress').listview('refresh').bind('click tap', function(event) { $(this).empty(); });
+        $('#progress').listview('refresh').bind('click tap',
+        function(event) {
+            $(this).empty();
+        });
 
         // disable inputs
         $('input').textinput('disable');
@@ -205,7 +187,9 @@
     // Start watching the acceleration
     function startWatch() {
         // Update acceleration
-        var options = { frequency: 120 };
+        var options = {
+            frequency: 120
+        };
 
         watchID = navigator.accelerometer.watchAcceleration(onSuccess, onError, options);
     }
@@ -225,8 +209,11 @@
 
     // onError: Failed to get the acceleration
     function onError() {
-		$('#progress').empty().append('<li data-theme="e" data-role="content">Virhe! Kiihtyvyysanturin käyttäminen ei onnistunut</div>');
-        $('#progress').listview('refresh').bind('click tap', function(event) { $(this).empty(); });
+        $('#progress').empty().append('<li data-theme="e" data-role="content">Virhe! Kiihtyvyysanturin käyttäminen ei onnistunut</div>');
+        $('#progress').listview('refresh').bind('click tap',
+        function(event) {
+            $(this).empty();
+        });
     }
 
     function activateClient(ax, ay, az) {
@@ -234,17 +221,17 @@
         var yy = (ay - oldy) * (ay - oldy);
         var zz = (az - oldz) * (az - oldz);
         var sum = xx + yy + zz;
-        var pituus = Math.abs( Math.sqrt(sum) );
+        var pituus = Math.abs(Math.sqrt(sum));
 
         $('#pituus').html('<b>Pituus:</b> ' + pituus);
 
         if (pituus > 20) {
             msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "jump");
-        } 
-		else if ((pituus < 19) && (pituus > 8)) {
+        }
+        else if ((pituus < 19) && (pituus > 8)) {
             msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "run");
-        } 
-		else {
+        }
+        else {
             oldx = ax;
             oldy = ay;
             oldz = az;
@@ -266,21 +253,84 @@
     }
 
     //==============================================================================
+    // JOIN FUNCTION
+    //==============================================================================
+    function join($url, $form) {
+        
+        $.ajax({
+            type: 'POST',
+            url: $url,
+            data: $form.serialize(),
+            dataType: 'xml',
+            cache: false,
+            beforeSend: function() {
+                // show loader spinner
+                $.mobile.showPageLoadingMsg();
+            },
+            error: function() {
+                $('#progress').empty().append('<li data-theme="e" data-role="content">Virhe! Verkkovirhe liityttäessä peliin</div>');
+                $('#progress').listview('refresh').bind('click tap',
+                function(event) {
+                    $(this).empty();
+                });
+            },
+            success: function(data) {
+                // xml data var
+                var $xml = $(data);
+
+                if ($xml.text() == 0) {
+                    // 0 as xml value means that auth went wrong
+                    $('#progress').empty().append('<li data-theme="e" data-role="content">Käyttäjätunnus tai salasana oli virheellinen.</div>');
+                    $('#progress').listview('refresh').bind('click tap',
+                    function(event) {
+                        $(this).empty();
+                    });
+                } else if ($xml.text() == 1) {
+                    // 1 as xml value means that auth ok
+                    // user information from xml var
+                    var $user = $xml.find('user');
+                    // set user info to User obj
+                    User.username = $user.attr('username');
+                    User.nickname = $user.attr('nickname');
+                    User.user_id = $user.attr('id');
+
+                    // union init
+                    init();
+
+                } else {
+                    // xml is not readable so probably something wrong with sportti server or there is some connection problem
+                    $('#progress').empty().append('<li data-theme="e" data-role="content">Virhe! Verkkovirhe liityttäessä peliin</div>');
+                    $('#progress').listview('refresh').bind('click tap',
+                    function(event) {
+                        $(this).empty();
+                    });
+                }
+            },
+            complete: function() {
+                // hide loader window
+                $.mobile.hidePageLoadingMsg();
+            }
+        });
+
+        return false;
+    }
+
+    //==============================================================================
     // LEAVE FUNCTION
     //==============================================================================
     function leave() {
 
-		// clear fields
+        // clear fields
         $('#acc').text('');
         $('#pituus').text('');
 
-		// enable fields
+        // enable fields
         $('input[type="text"], input[type="password"], input[type="number"]').textinput('enable');
 
         // buttons
         $jBtn = $('<button type="submit" name="submit" data-theme="b" value="join">Liity peliin</button>');
 
-		// add button and init it
+        // add button and init it
         $row = $('.form-button-row').empty();
         $jBtn.appendTo($row);
         $jBtn.button();
@@ -288,7 +338,10 @@
         orbiter.disconnect();
 
         $('#progress').empty().append('<li data-theme="b" data-role="content">Poistuit pelistä</div>');
-        $('#progress').listview('refresh').bind('click tap', function(event) { $(this).empty(); });
+        $('#progress').listview('refresh').bind('click tap',
+        function(event) {
+            $(this).empty();
+        });
 
         return false;
     }
