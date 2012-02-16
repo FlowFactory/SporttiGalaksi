@@ -30,7 +30,6 @@
     //==============================================================================
     // FORM VALIDATION
     //==============================================================================
-
     //==============================================================================
     // FORM ACTIONS
     //==============================================================================
@@ -49,36 +48,34 @@
         $url = $form.attr('action'),
         $action = $(event.target).val();
 
-        // from validation
-        $("form").validate({
-            rules: {
-                username: "required",
-                passcode: "required",
-                roomid: {
-                    required: true,
-                    number: true
-                }
-            },
-            messages: {
-                username: "Käyttäjätunnus on pakollinen",
-                passcode: "Salasana on pakollinen",
-                roomid: {
-                    required: "Pelihuoneen tunnus on pakollinen",
-                    number: "Pelihuoneen tunnus pitää olla numero"
-                }
-            },
-            submitHandler: function() {
-              join($url, $form);
+        // check that every field is filled
+        var error = 0;
+        $('input').each(function(index) {
+            if (!$(this).val().length) {
+                $(this).addClass('error');
+                error = 1;
+            } else {
+                $(this).removeClass('error');
             }
-            // invalidHandler: function() { alert("Invalid!") }
         });
-        
-        // trigger form validation if join event
+
+        // if error give message and return
+        if (error) {
+            $('#progress').empty().append('<li data-theme="e" data-role="content">Virhe! Liittyäksesi peliin täytä kaikki kentät</div>');
+            $('#progress').listview('refresh').bind('click tap',
+            function(event) {
+                $(this).empty();
+            });
+            return false;
+        }
+
+        // clear possible message from progress elements
+        $('#progress').empty();
+
         if ($action == 'join') {
-          $form.submit();
-        } 
-        
-        if ($action == 'leave') {
+            // call join func
+            join($url, $form);
+        } else if ($action == 'leave') {
             // if action is leave > call the general leave() action
             leave();
         }
@@ -93,7 +90,7 @@
     // Wait for PhoneGap to load function onLoad() { document.addEventListener("deviceready", onDeviceReady, false); }
     // PhoneGap is ready function onDeviceReady() { init(); }
     function init() {
-        $('#progress').empty().append('<li data-theme="b" data-role="content">Liitytään peliin.</div>');
+        $('#progress').empty().append('<li data-theme="b" data-role="content">Liitytään peliin...</div>');
         $('#progress').listview('refresh').bind('click tap',
         function(event) {
             $(this).empty();
@@ -114,6 +111,8 @@
         // TODO event kuuntelu jos huonetta ei ole
         // Connect to Union
         orbiter.connect("socket.dreamschool.fi", 443);
+        
+        // TODO check that connection ok or error
     }
 
     //==============================================================================
@@ -256,7 +255,7 @@
     // JOIN FUNCTION
     //==============================================================================
     function join($url, $form) {
-        
+
         $.ajax({
             type: 'POST',
             url: $url,
