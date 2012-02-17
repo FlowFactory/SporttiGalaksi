@@ -36,6 +36,11 @@
         <activity android:name="com.phonegap.DroidGap" android:label="@string/app_name" android:configChanges="orientation|keyboardHidden">
           <intent-filter></intent-filter>
         </activity>
+        
+        <service
+          android:name=".SporttiGalaksiService" >
+        </service>
+        
     </application>
     
     <uses-sdk android:minSdkVersion="8" />
