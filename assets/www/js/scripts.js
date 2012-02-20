@@ -30,53 +30,14 @@
     //==============================================================================
     // FORM ACTIONS
     //==============================================================================
-	
-	/*$('input').bind('click keyup keydown keypress submit', function(event) {
-		alert(event.which);
-		alert(event.type + ' ::: ' + event.which);
-	  if(event.which === undefined) {
-		alert('böö')
-		event.stopImmediatePropagation();
-		event.preventDefault();
-		return false;
-	}	
-	});
-	*/
-	
-    $('form').bind('submit',
-    function(event) {
-        // prevent default action which causes "undefined" page
-        //event.stopImmediatePropagation();
-		event.preventDefault();
-		//
-		// alert('aaaaaa')
-		return false;
-		//$.mobile.changePage("index.html", { changeHash: false });
-		// jic for the same reason 
-		
-    });
 
 	$(document).bind('pagebeforechange', function(event, data) {
-		// 
-		event.preventDefault();
-		// 
-		return false;
+		// prevent pagechange when form is submitted
+		if(typeof data.toPage === "string" ) {
+			event.preventDefault();
+		}
 	});
-/*
-	$('form').bind('submit onsubmit click',
-    function(event) {
-		//return false;
-        // prevent default action which causes "undefined" page
-        //event.stopImmediatePropagation();
-		//event.preventDefault();
-		//
-		alert(event.type + ' ::: ' + event.which);
-		
-		//$.mobile.changePage("index.html", { changeHash: false });
-		// jic for the same reason 
-		
-    });
-*/
+
     // submit form
     $('button').live('tap',
     function(event) {
@@ -293,7 +254,7 @@
         var sum = xx + yy + zz;
         var pituus = Math.abs(Math.sqrt(sum));
 
-        //$('#pituus').html('<b>Pituus:</b> ' + roundNumber(pituus));
+        $('#pituus').html('<b>Pituus:</b> ' + roundNumber(pituus));
 
         if (pituus > 20) {
             msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "jump");
@@ -321,13 +282,13 @@
             el.style.display = '';
         }
     }
-/*
+
 	function roundNumber(num) {
 	    var dec = 5;
 	    var result = Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
 	    return result;
 	}
-*/
+
     //==============================================================================
     // JOIN FUNCTION
     //==============================================================================
