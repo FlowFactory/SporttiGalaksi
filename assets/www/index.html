@@ -14,15 +14,16 @@
 	<script src="js/jquery-1.6.4.min.js"></script>
 	<script src="js/orientationchange-zoom-bug-fix.js"></script>
 	<script src="js/OrbiterMicro_1.1.0.514_Release_min.js"></script>
+	<script src="js/phonegap-1.4.1.js"></script>
 	<script src="js/init-settings.js"></script>
 	<script src="js/jquery.mobile-1.0.1.min.js"></script>
 	<script src="js/scripts.js"></script>
 </head>
-<body>
+<body id="body">
 <div data-role="page">
 	<div data-role="content">	
 		<img src="img/sg_logo.png" class="logo">
-		<form id="frm" method="post" action="https://sportti.dreamschool.fi/galaxy/api/login" autocomplete="off">
+		<form id="frm" method="post" action="https://sportti.dreamschool.fi/galaxy/api/login" autocomplete="off" onsubmit="return false;">
 			<fieldset>
 			<div class="form-row form-input-row">
 			<ul id="progress" data-role="listview" data-theme="c" data-inset="true"></ul>
@@ -39,7 +40,7 @@
 			</div>
 			<div class="form-row form-input-row">
 			<label for="roomid">Pelihuone:</label>
-			<input type="text" name="roomid" id="roomid" />
+			<input type="number" name="roomid" id="roomid" />
 			</div>
 			<div class="form-row form-button-row">
 			<button type="button" name="submit" data-theme="b" value="join">Liity peliin</button>
