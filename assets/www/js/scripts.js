@@ -30,13 +30,13 @@
     //==============================================================================
     // FORM ACTIONS
     //==============================================================================
-
-	$(document).bind('pagebeforechange', function(event, data) {
-		// prevent pagechange when form is submitted
-		if(typeof data.toPage === "string" ) {
-			event.preventDefault();
-		}
-	});
+    $(document).bind('pagebeforechange',
+    function(event, data) {
+        // prevent pagechange when form is submitted
+        if (typeof data.toPage === "string") {
+            event.preventDefault();
+        }
+    });
 
     // submit form
     $('button').live('tap',
@@ -60,6 +60,7 @@
 
         // if error give message and return
         if (error) {
+            //
             $('#progress').empty().append('<li data-theme="e" data-role="content">Liittyäksesi peliin täytä kaikki kentät</div>');
             $('#progress').listview('refresh').bind('tap',
             function(event) {
@@ -91,17 +92,13 @@
     function init() {
         //
         roomID = $('#roomid').val();
-
         // Create Orbiter object
         orbiter = new net.user1.orbiter.Orbiter();
-
         // Register for connection events
         orbiter.addEventListener(net.user1.orbiter.OrbiterEvent.READY, readyListener, this);
         orbiter.addEventListener(net.user1.orbiter.OrbiterEvent.CLOSE, closeListener, this);
-
         // Register for incoming messages from Union
         msgManager = orbiter.getMessageManager();
-
         // Connect to Union
         orbiter.connect("socket.dreamschool.fi", 443);
     }
@@ -111,20 +108,19 @@
     //==============================================================================
     // Triggered when the connection is ready
     function readyListener(e) {
-
+        //
         $('#progress').empty();
-
+        //
         UPC = net.user1.orbiter.UPC;
-
+        // listeners
         msgManager.addMessageListener(UPC.JOINED_ROOM, joinedRoomListener, this);
         msgManager.addMessageListener("STATE_MESSAGE", stateListener, this, [roomID]);
         msgManager.addMessageListener(UPC.JOIN_ROOM_RESULT, joinRoomResultListener, this);
-
         //
         clientID = orbiter.getClientID();
         // Join the game room
         msgManager.sendUPC(UPC.JOIN_ROOM, roomID);
-
+        //
         $.mobile.hidePageLoadingMsg();
     }
 
@@ -283,11 +279,11 @@
         }
     }
 
-	function roundNumber(num) {
-	    var dec = 5;
-	    var result = Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
-	    return result;
-	}
+    function roundNumber(num) {
+        var dec = 5;
+        var result = Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
+        return result;
+    }
 
     //==============================================================================
     // JOIN FUNCTION
