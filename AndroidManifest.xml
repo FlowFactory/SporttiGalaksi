@@ -26,6 +26,7 @@
         android:label="@string/app_name" >
         <activity
             android:name=".SporttiGalaksiActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +34,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.phonegap.DroidGap" android:label="@string/app_name" android:configChanges="orientation|keyboardHidden">
+        <activity 
+        	android:name="com.phonegap.DroidGap" 
+        	android:label="@string/app_name" 
+        	android:configChanges="orientation|keyboardHidden">
           <intent-filter></intent-filter>
         </activity>
     </application>
