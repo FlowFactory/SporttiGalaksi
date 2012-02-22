@@ -342,10 +342,7 @@
                     $.mobile.hidePageLoadingMsg();
                 }
             },
-            complete: function() {
-                // hide loader window
-                //$.mobile.hidePageLoadingMsg();
-                }
+            complete: function() { }
         });
 
         return false;
@@ -377,5 +374,26 @@
 
         return false;
     }
+
+	var state = "";
+	function check_network() {
+	    var networkState = navigator.network.connection.type;
+
+	    var states = {};
+	    states[Connection.UNKNOWN]  = 'Unknown connection';
+	    states[Connection.ETHERNET] = 'Ethernet connection';
+	    states[Connection.WIFI]     = 'WiFi connection';
+	    states[Connection.CELL_2G]  = 'Cell 2G connection';
+	    states[Connection.CELL_3G]  = 'Cell 3G connection';
+	    states[Connection.CELL_4G]  = 'Cell 4G connection';
+	    states[Connection.NONE]     = 'No network connection';
+
+		if(states[networkState] != state) {
+			console.log('Connection state changed to: ' + states[networkState]);
+			state = states[networkState];
+		}
+	}
+	
+	setInterval(check_network, 1000);
 
 })(this.jQuery);
