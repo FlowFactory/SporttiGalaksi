@@ -253,7 +253,11 @@
 		pituus = Math.round(pituus);
 		
 		console.log('pyöristetty pituus arvo: ' + pituus);
-        // $('#pituus').html('<b>Pituus:</b> ' + roundNumber(pituus));
+		
+		// stats
+		if(pituus > 10) {
+			$.ajax({ type: 'GET', cache: false, url: 'https://sportti.dreamschool.fi/stats/jump.php?value='+pituus });
+		}
 
         if (pituus > 20) {
             msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "jump;"+pituus);
@@ -411,6 +415,29 @@
 		});
 	}
 	
-	setInterval(ajax, 2000);
+//	setInterval(ajax, 2000);
+/*
+	var soketti = new WebSocket('ws://socket.dreamschool.fi', 443);
+	
+	soketti.onopen = function(e) {
+		console.log("connection open");
+		this.send('Hello Server!');
+	};
+	
+	soketti.onmessage = function(e) {
+	  console.log('data : ' + e.data);
+	};
+	
+	soketti.onerror = function(e) {
+	  console.log('erorr');	
+	};
+	
+	
+	soketti.open();
+	//function soketti() {
+	  	
+	///}
+	//setInterval(, 1000);
+*/
 
 })(this.jQuery);
