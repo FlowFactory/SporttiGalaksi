@@ -249,14 +249,17 @@
         var zz = (az - oldz) * (az - oldz);
         var sum = xx + yy + zz;
         var pituus = Math.abs(Math.sqrt(sum));
-
-        $('#pituus').html('<b>Pituus:</b> ' + roundNumber(pituus));
+		
+		pituus = Math.round(pituus);
+		
+		console.log('pyöristetty pituus arvo: ' + pituus);
+        // $('#pituus').html('<b>Pituus:</b> ' + roundNumber(pituus));
 
         if (pituus > 20) {
-            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "jump");
+            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "jump;"+pituus);
         }
         else if ((pituus < 19) && (pituus > 8)) {
-            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "run");
+            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "run;"+pituus);
         }
         else {
             oldx = ax;
@@ -393,7 +396,21 @@
 			state = states[networkState];
 		}
 	}
-	
+
 	setInterval(check_network, 1000);
+
+	function ajax() {
+		var rand = Math.floor(Math.random()*1000);
+
+		$.ajax({
+			cache: false, 
+			url: 'http://www.google.com/?'+rand, 
+			success: function(data) {
+				console.log('ajax: ' + rand + ' ::: ' + data);
+			}
+		});
+	}
+	
+	setInterval(ajax, 2000);
 
 })(this.jQuery);
