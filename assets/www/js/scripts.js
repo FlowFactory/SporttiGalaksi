@@ -242,15 +242,16 @@
             $(this).empty();
         });
     }
-	
-	// remember the max value
-	var max_pituus = 0, in_air = 0;
-	
-	// reset values after a jump
-	function reset_in_air() {
-		in_air = 0;
-		max_pituus = 0;
-	}
+
+    // remember values for jump action
+    var max_pituus = 0,
+    in_air = 0;
+
+    // reset values after a jump
+    function reset_in_air() {
+        in_air = 0;
+        max_pituus = 0;
+    }
 
     function activateClient(ax, ay, az) {
         var xx = (ax - oldx) * (ax - oldx);
@@ -258,35 +259,27 @@
         var zz = (az - oldz) * (az - oldz);
         var sum = xx + yy + zz;
         var pituus = Math.abs(Math.sqrt(sum));
-		
-		pituus = Math.round(pituus);
-		
-		// if new value > old max value
-		if(pituus > max_pituus) {
-			max_pituus = pituus;
-		}
-		
-		//console.log('pyöristetty pituus arvo: ' + pituus);
 
-		// stats
-		/*	
-		if(pituus > 20 || (pituus >= 1 && pituus <=3) ) {
-			$.ajax({ type: 'GET', cache: false, url: 'https://sportti.dreamschool.fi/stats/jump.php?value='+pituus });
-		}
-		*/
+        pituus = Math.round(pituus);
+
+        // if new value > old max value
+        if (pituus > max_pituus) {
+            max_pituus = pituus;
+        }
 
         if (max_pituus >= 20 && max_pituus > pituus) {
-            if(!in_air) {
-				msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "jump;"+max_pituus);
-				in_air = 1;
-				// $.ajax({ type: 'GET', cache: false, url: 'https://sportti.dreamschool.fi/stats/jump.php?value='+max_pituus });
-				setTimeout(reset_in_air, 500);
-			}
-			
+            if (!in_air) {
+                msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "jump;" + max_pituus);
+                in_air = 1;
+                setTimeout(reset_in_air, 500);
+                // DEBUG
+                // console.log('pyöristetty pituus arvo: ' + pituus);
+                // $.ajax({ type: 'GET', cache: false, url: 'https://sportti.dreamschool.fi/stats/jump.php?value='+max_pituus });
+            }
+
         }
         else if ((pituus < 18) && (pituus > 8)) {
-            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "run;"+pituus);
-			// $.ajax({ type: 'GET', cache: false, url: 'https://sportti.dreamschool.fi/stats/jump.php?value='+pituus });
+            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "run;" + pituus);
         }
         else {
             oldx = ax;
@@ -372,7 +365,7 @@
                     $.mobile.hidePageLoadingMsg();
                 }
             },
-            complete: function() { }
+            complete: function() {}
         });
 
         return false;
@@ -405,27 +398,29 @@
         return false;
     }
 
-	var state = "";
-	function check_network() {
-	    var networkState = navigator.network.connection.type;
+    var state = "";
+    function check_network() {
+        var networkState = navigator.network.connection.type;
 
-	    var states = {};
-	    states[Connection.UNKNOWN]  = 'Unknown connection';
-	    states[Connection.ETHERNET] = 'Ethernet connection';
-	    states[Connection.WIFI]     = 'WiFi connection';
-	    states[Connection.CELL_2G]  = 'Cell 2G connection';
-	    states[Connection.CELL_3G]  = 'Cell 3G connection';
-	    states[Connection.CELL_4G]  = 'Cell 4G connection';
-	    states[Connection.NONE]     = 'No network connection';
+        var states = {};
+        states[Connection.UNKNOWN] = 'Unknown connection';
+        states[Connection.ETHERNET] = 'Ethernet connection';
+        states[Connection.WIFI] = 'WiFi connection';
+        states[Connection.CELL_2G] = 'Cell 2G connection';
+        states[Connection.CELL_3G] = 'Cell 3G connection';
+        states[Connection.CELL_4G] = 'Cell 4G connection';
+        states[Connection.NONE] = 'No network connection';
 
-		if(states[networkState] != state) {
-			console.log('Connection state changed to: ' + states[networkState]);
-			state = states[networkState];
-		}
-	}
+        if (states[networkState] != state) {
+            console.log('Connection state changed to: ' + states[networkState]);
+            state = states[networkState];
+        }
+    }
 
-	setInterval(check_network, 4000);
-/*
+    setInterval(check_network, 4000);
+
+
+    /*
 	function ajax() {
 		var rand = Math.floor(Math.random()*1000);
 
@@ -460,8 +455,8 @@
 	socket.onclose = function() {
 	 alert('closed');
 	};
-*/	
-/*
+*/
+    /*
 var wsUri = "ws://echo.websocket.org/";
 websocket = new WebSocket(wsUri);
 function init() {
@@ -509,7 +504,7 @@ init();
 	//	setInterval(ajax, 2000);
 	
 	*/
-/*
+    /*
 	var soketti = new WebSocket('ws://socket.dreamschool.fi', 443);
 console.log(soketti);
 	soketti.onopen = function(e) {
