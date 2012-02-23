@@ -24,24 +24,22 @@
 <div data-role="page">
 	<div data-role="content">	
 		<img src="img/sg_logo.png" class="logo">
-		<form id="frm" method="post" action="https://sportti.dreamschool.fi/galaxy/api/login" autocomplete="off">
+		<form id="frm" method="post" action="https://sportti.dreamschool.fi/galaxy/api/login" autocomplete="on">
 			<fieldset>
 			<div class="form-row form-input-row">
 			<ul id="progress" data-role="listview" data-theme="c" data-inset="true"></ul>
 			</div>
-			<div id="acc"></div>
-			<div id="pituus"></div>
 			<div class="form-row form-input-row">
 			<label for="username">K&auml;ytt&auml;j&auml;tunnus:</label>
 			<input type="text" name="username" id="username" autofocus />
 			</div>
 			<div class="form-row form-input-row">
 			<label for="passcode">Salasana:</label>
-			<input type="password" name="passcode" id="passcode" />
+			<input type="password" name="passcode" id="passcode" autocomplete="off" />
 			</div>
 			<div class="form-row form-input-row">
 			<label for="roomid">Pelihuone:</label>
-			<input type="number" name="roomid" id="roomid" />
+			<input type="number" name="roomid" id="roomid" autocomplete="off" />
 			</div>
 			<div class="form-row form-button-row">
 			<button type="button" name="submit" data-theme="b" value="join">Liity peliin</button>
