@@ -126,7 +126,7 @@
 
     // Triggered when the connection is closed
     function closeListener(e) {
-        //
+        // TODO tarkempi syy miksi katkesi > kuten joinissa
         $('#progress').empty();
         //
         leave();
@@ -278,7 +278,7 @@
             }
 
         }
-        else if ((pituus < 18) && (pituus > 8)) {
+        else if ((pituus < 18) && (pituus > 10)) {
             msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "run;" + pituus);
         }
         else {
@@ -375,11 +375,6 @@
     // LEAVE FUNCTION
     //==============================================================================
     function leave() {
-
-        // clear fields
-        $('#acc').text('');
-        $('#pituus').text('');
-
         // enable fields
         $('input[type="text"], input[type="password"], input[type="number"]').textinput('enable');
 
@@ -419,7 +414,6 @@
 
     setInterval(check_network, 4000);
 
-
     /*
 	function ajax() {
 		var rand = Math.floor(Math.random()*1000);
@@ -432,94 +426,30 @@
 			}
 		});
 	}
+	*/
+	//	setInterval(ajax, 2000);
 
-
-//var wsUri = "ws://echo.websocket.org/";
-//var websocket = new WebSocket(wsUri);
+// var ws = new WebSocket('ws://130.230.156.183', 'huuda');  // 'ws://localhost:8000/biff', 'borf');
 
 // new socket
 /*
-	var socket = new WebSocket('ws://echo.websocket.org/');
-	 
+	var socket = new WebSocket('ws://130.230.156.183:8080/huuda');
+
 	// push a message after the connection is established.
 	socket.onopen = function() {
-	 socket.send('{ "type": "join", "game_id": "game/6"}')
+		socket.send('Hello World')
 	};
 
 	// alerts message pushed from server
 	socket.onmessage = function(msg) {
-	 alert(JSON.stringify(msg.data));
+		alert(JSON.stringify(msg));
 	};
 
 	// alert close event
 	socket.onclose = function() {
-	 alert('closed');
+		alert('closed');
 	};
+
 */
-    /*
-var wsUri = "ws://echo.websocket.org/";
-websocket = new WebSocket(wsUri);
-function init() {
-    testWebSocket();
-}
-function testWebSocket() {
-    websocket = new WebSocket(wsUri);
-    websocket.onopen = function(evt) {
-        onOpen(evt)
-    };
-    websocket.onclose = function(evt) {
-        onClose(evt)
-    };
-    websocket.onmessage = function(evt) {
-        onMessage(evt)
-    };
-    websocket.onerror = function(evt) {
-        onError(evt)
-    };
-}
 
-function onOpen(evt) {
-    writeToScreen("CONNECTED");
-    doSend("WebSocket rocks");
-}
-function onClose(evt) {
-    writeToScreen("DISCONNECTED");
-}
-function onMessage(evt) {
-    writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
-    websocket.close();
-}
-function onError(evt) {
-    writeToScreen('ERROR:</span> ' + evt.data);
-}
-function doSend(message) {
-    writeToScreen("SENT: " + message);
-    websocket.send(message);
-}
-function writeToScreen(message) {
-    console.log(message);
-}	
-
-init();
-	//	setInterval(ajax, 2000);
-	
-	*/
-    /*
-	var soketti = new WebSocket('ws://socket.dreamschool.fi', 443);
-console.log(soketti);
-	soketti.onopen = function(e) {
-		console.log("connection open");
-		this.send('Hello Server!');
-	};
-
-	soketti.onmessage = function(e) {
-	  console.log('data : ' + e.data);
-	};
-
-	soketti.onerror = function(e) {
-	  console.log('erorr');	
-	};
-
-	soketti.send('hello world');
-*/
 })(this.jQuery);

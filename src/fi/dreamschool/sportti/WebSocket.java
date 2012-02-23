@@ -20,6 +20,10 @@ public class WebSocket extends com.strumsoft.websocket.phonegap.WebSocket {
 	public void onMessage(String msg) {
 		super.onMessage(msg);
 	}
+	
+	public void onError(Throwable t) {
+		super.onError(t);
+	}
 
 	public void onReconnect() {
 		
