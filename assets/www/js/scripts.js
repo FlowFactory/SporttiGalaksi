@@ -242,6 +242,15 @@
             $(this).empty();
         });
     }
+	
+	// remember the max value
+	var max_pituus = 0, in_air = 0;
+	
+	// reset values after a jump
+	function reset_in_air() {
+		in_air = 0;
+		max_pituus = 0;
+	}
 
     function activateClient(ax, ay, az) {
         var xx = (ax - oldx) * (ax - oldx);
@@ -252,18 +261,32 @@
 		
 		pituus = Math.round(pituus);
 		
-		console.log('pyöristetty pituus arvo: ' + pituus);
+		// if new value > old max value
+		if(pituus > max_pituus) {
+			max_pituus = pituus;
+		}
 		
+		//console.log('pyöristetty pituus arvo: ' + pituus);
+
 		// stats
-		if(pituus > 10) {
+		/*	
+		if(pituus > 20 || (pituus >= 1 && pituus <=3) ) {
 			$.ajax({ type: 'GET', cache: false, url: 'https://sportti.dreamschool.fi/stats/jump.php?value='+pituus });
 		}
+		*/
 
-        if (pituus > 20) {
-            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "jump;"+pituus);
+        if (max_pituus >= 20 && max_pituus > pituus) {
+            if(!in_air) {
+				msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "jump;"+max_pituus);
+				in_air = 1;
+				// $.ajax({ type: 'GET', cache: false, url: 'https://sportti.dreamschool.fi/stats/jump.php?value='+max_pituus });
+				setTimeout(reset_in_air, 500);
+			}
+			
         }
-        else if ((pituus < 19) && (pituus > 8)) {
+        else if ((pituus < 18) && (pituus > 8)) {
             msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "run;"+pituus);
+			// $.ajax({ type: 'GET', cache: false, url: 'https://sportti.dreamschool.fi/stats/jump.php?value='+pituus });
         }
         else {
             oldx = ax;
@@ -401,8 +424,8 @@
 		}
 	}
 
-	setInterval(check_network, 1000);
-
+	setInterval(check_network, 4000);
+/*
 	function ajax() {
 		var rand = Math.floor(Math.random()*1000);
 
@@ -414,30 +437,94 @@
 			}
 		});
 	}
+
+
+//var wsUri = "ws://echo.websocket.org/";
+//var websocket = new WebSocket(wsUri);
+
+// new socket
+/*
+	var socket = new WebSocket('ws://echo.websocket.org/');
+	 
+	// push a message after the connection is established.
+	socket.onopen = function() {
+	 socket.send('{ "type": "join", "game_id": "game/6"}')
+	};
+
+	// alerts message pushed from server
+	socket.onmessage = function(msg) {
+	 alert(JSON.stringify(msg.data));
+	};
+
+	// alert close event
+	socket.onclose = function() {
+	 alert('closed');
+	};
+*/	
+/*
+var wsUri = "ws://echo.websocket.org/";
+websocket = new WebSocket(wsUri);
+function init() {
+    testWebSocket();
+}
+function testWebSocket() {
+    websocket = new WebSocket(wsUri);
+    websocket.onopen = function(evt) {
+        onOpen(evt)
+    };
+    websocket.onclose = function(evt) {
+        onClose(evt)
+    };
+    websocket.onmessage = function(evt) {
+        onMessage(evt)
+    };
+    websocket.onerror = function(evt) {
+        onError(evt)
+    };
+}
+
+function onOpen(evt) {
+    writeToScreen("CONNECTED");
+    doSend("WebSocket rocks");
+}
+function onClose(evt) {
+    writeToScreen("DISCONNECTED");
+}
+function onMessage(evt) {
+    writeToScreen('<span style="color: blue;">RESPONSE: ' + evt.data + '</span>');
+    websocket.close();
+}
+function onError(evt) {
+    writeToScreen('ERROR:</span> ' + evt.data);
+}
+function doSend(message) {
+    writeToScreen("SENT: " + message);
+    websocket.send(message);
+}
+function writeToScreen(message) {
+    console.log(message);
+}	
+
+init();
+	//	setInterval(ajax, 2000);
 	
-//	setInterval(ajax, 2000);
+	*/
 /*
 	var soketti = new WebSocket('ws://socket.dreamschool.fi', 443);
-	
+console.log(soketti);
 	soketti.onopen = function(e) {
 		console.log("connection open");
 		this.send('Hello Server!');
 	};
-	
+
 	soketti.onmessage = function(e) {
 	  console.log('data : ' + e.data);
 	};
-	
+
 	soketti.onerror = function(e) {
 	  console.log('erorr');	
 	};
-	
-	
-	soketti.open();
-	//function soketti() {
-	  	
-	///}
-	//setInterval(, 1000);
-*/
 
+	soketti.send('hello world');
+*/
 })(this.jQuery);
