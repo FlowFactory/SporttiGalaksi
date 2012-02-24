@@ -495,6 +495,7 @@ socket.onerror = function (e) {
 };
 */
 
+/*
 	if (typeof WebSocket === "undefined") {
 	  alert('Error! Browser does not support WebSockets!');
 	}
@@ -528,7 +529,7 @@ socket.onerror = function (e) {
 		alert('error');
 	};
 
-
+*/
 
 		// set username ready if used before
 		(function user_vars() {
