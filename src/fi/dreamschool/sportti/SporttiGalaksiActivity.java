@@ -1,9 +1,9 @@
 package fi.dreamschool.sportti;
 
 import android.content.Intent;
-import com.strumsoft.websocket.phonegap.WebSocketFactory;
 import android.os.Bundle;
-import com.phonegap.*;
+import com.phonegap.DroidGap;
+import com.strumsoft.websocket.phonegap.WebSocketFactory;
 
 public class SporttiGalaksiActivity extends DroidGap {
 	/** Called when the activity is first created. */
@@ -12,14 +12,13 @@ public class SporttiGalaksiActivity extends DroidGap {
 		super.onCreate(savedInstanceState);
 		super.loadUrl("file:///android_asset/www/index.html");
 
+		// lock wifi on
 		Intent serviceIntent = new Intent();
 		serviceIntent.setAction("fi.dreamschool.sportti.SporttiGalaksiWifi");
 		this.startService(serviceIntent);
-		
-		// attach websocket factory
-		appView.addJavascriptInterface(new WebSocketFactory(appView), "WebSocketFactory");
 
+		// attach websocket factory
+		appView.addJavascriptInterface(new WebSocketFactory(appView),
+				"WebSocketFactory");
 	}
-	
-	
 }

@@ -85,8 +85,7 @@
     
     // alerts message pushed from server
     WebSocket.prototype.onerror = function(msg){
-    	//throw new Error('onerror not implemented.');
-		console.log('Socket onError message: ' + msg);
+    	throw new Error('onerror not implemented.');
     };
     
     // alert close event

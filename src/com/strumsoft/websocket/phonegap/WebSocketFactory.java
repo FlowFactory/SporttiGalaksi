@@ -28,8 +28,8 @@ package com.strumsoft.websocket.phonegap;
 
 import java.net.URI;
 import java.util.Random;
-
 import android.webkit.WebView;
+import com.strumsoft.websocket.phonegap.WebSocket;
 
 /**
  * The <tt>WebSocketFactory</tt> is like a helper class to instantiate new
@@ -55,22 +55,23 @@ public class WebSocketFactory {
 
 	public WebSocket getInstance(String url) {
 		// use Draft75 by default
-		return getInstance(url, WebSocket.Draft.DRAFT75);
+		return getInstance(url, WebSocket.Draft.DRAFT76);
 	}
 
 	public WebSocket getInstance(String url, WebSocket.Draft draft) {
 		WebSocket socket = null;
 		Thread th = null;
 		try {
-			socket = new WebSocket(appView, new URI(url), draft, getRandonUniqueId());
+			socket = new WebSocket(appView, new URI(url), draft,
+					getRandonUniqueId());
 			th = socket.connect();
 			return socket;
 		} catch (Exception e) {
-			//Log.v("websocket", e.toString());
-			if(th != null) {
+			// Log.v("websocket", e.toString());
+			if (th != null) {
 				th.interrupt();
 			}
-		} 
+		}
 		return null;
 	}
 

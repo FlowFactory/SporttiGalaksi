@@ -225,7 +225,7 @@ public class WebSocket implements Runnable {
 	protected WebSocket(WebView appView, URI uri, Draft draft, String id) {
 		this.appView = appView;
 		this.uri = uri;
-		this.draft = draft;
+		this.draft = draft; // Draft.DRAFT76; // draft; // teemu 24.2.2012 > always force to draft version 76 (http://www.unionplatform.com/?page_id=2954)
 
 		// port
 		port = uri.getPort();
