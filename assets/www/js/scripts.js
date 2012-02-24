@@ -112,7 +112,7 @@ function onDeviceReady() {
 			if (typeof WebSocket === "undefined") {
 			  alert('Browser does not support WebSockets!');
 			}
-
+			// 
 			orbiter.disableHTTPFailover();
 			// Connect to Union
             orbiter.connect("socket.dreamschool.fi", 80);
