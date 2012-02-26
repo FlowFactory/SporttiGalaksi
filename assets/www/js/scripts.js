@@ -109,11 +109,11 @@ function onDeviceReady() {
             msgManager = orbiter.getMessageManager();
             // 
 
-			if (typeof WebSocket === "undefined") {
-			  alert('Browser does not support WebSockets!');
-			}
+			//if (typeof WebSocket === "undefined") {
+			//  alert('Browser does not support WebSockets!');
+			//}
 			// 
-			orbiter.disableHTTPFailover();
+			//orbiter.disableHTTPFailover();
 			// Connect to Union
             orbiter.connect("socket.dreamschool.fi", 80);
         }
@@ -143,7 +143,7 @@ function onDeviceReady() {
         function closeListener(e) {
             // TODO tarkempi syy miksi katkesi > kuten joinissa
             //$('#progress').empty();
-			$('#progress').empty().append('<li data-theme="e" data-role="content">Yhteys pelihuoneeseen katkesi</div>');
+			      $('#progress').empty().append('<li data-theme="e" data-role="content">Yhteys pelihuoneeseen katkesi</div>');
             $('#progress').listview('refresh').bind('tap',
             function(event) {
                 $(this).empty();
@@ -293,9 +293,6 @@ function onDeviceReady() {
                     msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "jump;" + max_pituus);
                     in_air = 1;
                     setTimeout(reset_in_air, 500);
-                    // DEBUG
-                    // console.log('pyöristetty pituus arvo: ' + pituus);
-                    // $.ajax({ type: 'GET', cache: false, url: 'https://sportti.dreamschool.fi/stats/jump.php?value='+max_pituus });
                 }
 
             }
@@ -437,99 +434,6 @@ function onDeviceReady() {
         }
 
         setInterval(check_network, 4000);
-
-        /*
-	function ajax() {
-		var rand = Math.floor(Math.random()*1000);
-
-		$.ajax({
-			cache: false, 
-			url: 'http://www.google.com/?'+rand, 
-			success: function(data) {
-				console.log('ajax: ' + rand + ' ::: ' + data);
-			}
-		});
-	}
-	*/
-        //	setInterval(ajax, 2000);
-        // var ws = new WebSocket('ws://130.230.156.183', 'huuda');  // 'ws://localhost:8000/biff', 'borf');
-        // new socket
-        /*
-	var socket = new WebSocket('ws://130.230.156.183:8080/huuda');
-
-	// push a message after the connection is established.
-	socket.onopen = function() {
-		socket.send('Hello World')
-	};
-
-	// alerts message pushed from server
-	socket.onmessage = function(msg) {
-		alert(JSON.stringify(msg));
-	};
-
-	// alert close event
-	socket.onclose = function() {
-		alert('closed');
-	};
-
-*/
-
-/*
-var socket = new WebSocket("ws://example.com:80");
- 
-socket.onopen = function (e) {
-  console.log("Connection opened.");
-  socket.send("Hello server!");
-};
- 
-socket.onmessage = function (e) {
-  console.log("Data received: " + e.data);
-};
- 
-socket.onclose = function (e) {
-  console.log("Connection closed.");
-};
- 
-socket.onerror = function (e) {
-  console.log("Connection error.");
-};
-*/
-
-/*
-	if (typeof WebSocket === "undefined") {
-	  alert('Error! Browser does not support WebSockets!');
-	}
-
-	// new socket
-	var socket = new WebSocket('ws://socket.dreamschool.fi/');
-	
-	//WebSocket webSocket = new WebSocket(URI.create("ws://yourserver.com"), DRAFT-76, "any_id");
-	//webSocket.connect();
-
-	console.log("Socketti objekti " + socket);
-
-	// push a message after the connection is established.
-	socket.onopen = function() {
-		socket.send('Hello World');
-		console.log('Socket Connection Opened');
-	};
-
-	// alerts message pushed from server
-	socket.onmessage = function(msg) {
-		alert(JSON.stringify(msg));
-	};
-
-	// alert close event
-	socket.onclose = function() {
-		alert('closed');
-	};
-	
-	// alert close event
-	socket.onerror = function() {
-		alert('error');
-	};
-
-*/
 
 		// set username ready if used before
 		(function user_vars() {
