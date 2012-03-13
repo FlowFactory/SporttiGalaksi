@@ -2,11 +2,11 @@
 
 // Wait for PhoneGap to load
 //
-document.addEventListener("deviceready", onDeviceReady, false);
+//document.addEventListener("deviceready", onDeviceReady, false);
 
 // PhoneGap is ready
 //
-function onDeviceReady() {
+//function onDeviceReady() {
 
     (function($) {
 
@@ -14,6 +14,7 @@ function onDeviceReady() {
         // VARIABLES = Union & PhoneGap & GameController
         //==============================================================================
         // user object for user vars
+ 
         var User = {};
 
         // union vars
@@ -38,6 +39,7 @@ function onDeviceReady() {
         //==============================================================================
         // FORM ACTIONS
         //==============================================================================
+/*        
         $(document).bind('pagebeforechange',
         function(event, data) {
             // prevent pagechange when form is submitted
@@ -45,15 +47,12 @@ function onDeviceReady() {
                 event.preventDefault();
             }
         });
-
-        // submit form
-        $('button').live('tap',
-        function(event) {
+*/
+        $("#login").live("tap", function(event) {
 
             // get form values
             var $form = $(event.target).closest('form'),
-            $url = $form.attr('action'),
-            $action = $(event.target).val();
+            $url = $form.attr('action');
 
             // check that every field is filled
             var error = 0;
@@ -69,34 +68,124 @@ function onDeviceReady() {
             // if error give message and return
             if (error) {
                 //
-                $('#progress').empty().append('<li data-theme="e" data-role="content">Liittyäksesi peliin täytä kaikki kentät</div>');
-                $('#progress').listview('refresh').bind('tap',
+                $('#login-message').text('Kirjautuaksesi täytä käyttäjätunnus ja salasana').addClass("error");
+                $('#login-message').bind('tap',
                 function(event) {
-                    $(this).empty();
+                    $(this).text('').removeClass("error");
+                    $('input[type="text"], input[type="password"]').removeClass('error');
                 });
                 return false;
             }
 
             // clear possible message from progress elements
-            $('#progress').empty();
+            $('#login-message').text('').removeClass("error");
 
-            if ($action == 'join') {
-                // call join func
-                join($url, $form);
-            } else if ($action == 'leave') {
-                // if action is leave > call the general leave() action
-                leave();
-            }
+            // call join func
+            join($url, $form);
 
             // returning something
             return false;
         });
+        
+        //==============================================================================
+        // JOIN FUNCTION
+        //==============================================================================
+        function join($url, $form) {
 
+            $.ajax({
+                type: 'POST',
+                url: $url,
+                data: $form.serialize(),
+                dataType: 'xml',
+                cache: false,
+              //  timeout: 5000,
+                beforeSend: function() {
+                    // show loader spinner
+                    $.mobile.showPageLoadingMsg();
+                },
+                error: function() {
+                    $('#login-message').text('Verkkovirhe kirjauduttaessa peliin').addClass("error");
+                    $('#login-message').bind('tap',
+                    function(event) {
+                        $(this).text('').removeClass("error");
+                        $('input[type="text"], input[type="password"]').removeClass('error');
+                    });
+                    $.mobile.hidePageLoadingMsg();
+                },
+                success: function(data) {
+                    // xml data var
+                    var $xml = $(data);
+                    
+                    $.mobile.hidePageLoadingMsg();
+
+                    if ($xml.text() == 0) {
+                        // 0 as xml value means that auth went wrong
+                        $('#login-message').text('Käyttäjätunnus tai salasana oli virheellinen.').addClass("error");
+                        $('#login-message').bind('tap',
+                        function(event) {
+                            $(this).text('').removeClass("error");
+                            $('input[type="text"], input[type="password"]').removeClass('error');
+                        });
+
+                    } else if ($xml.text() == 1) {
+                        // 1 as xml value means that auth ok
+                        // user information from xml var
+                        var $user = $xml.find('user');
+                        // set user info to User obj
+                        User.username = $user.attr('username');
+                        User.nickname = $user.attr('nickname');
+                        User.user_id = $user.attr('id');
+
+                        // set username in localStorage for the next time
+                        window.localStorage.setItem('username', User.username);
+
+                        $.mobile.changePage('#app-page');
+
+                        // union init
+                        // init();
+
+                    } else {
+                        // xml is not readable so probably something wrong with sportti server or there is some connection problem
+                        $('#login-message').text('Verkkovirhe kirjauduttaessa peliin').addClass("error");
+                        $('#login-message').bind('tap',
+                        function(event) {
+                            $(this).text('').removeClass("error");
+                            $('input[type="text"], input[type="password"]').removeClass('error');
+                        });
+                        $.mobile.hidePageLoadingMsg();
+                    }
+                },
+                complete: function() {}
+            });
+
+            return false;
+        }
+        
+        
+        
+        $("#read").live("tap", function(event) {
+          //
+          $('#app-message').text('').removeClass("error");
+          //
+          window.plugins.barcodeScanner.scan( function(result) {
+            $('#app-message').text(result.text);
+      		     /*   alert("We got a barcode\n" +
+      		                  "Result: " + result.text + "\n" +
+      		                  "Format: " + result.format + "\n" +
+      		                  "Cancelled: " + result.cancelled); */
+      		    }, function(error) {
+      		      $('#app-message').text("Scanning failed: " + error).addClass("error");
+      		    }
+      		);
+          
+        });
+        
         //==============================================================================
         // INITIALIZATION
         //==============================================================================
         // Wait for PhoneGap to load function onLoad() { document.addEventListener("deviceready", onDeviceReady, false); }
         // PhoneGap is ready function onDeviceReady() { init(); }
+
         function init() {
             //
             roomID = $('#roomid').val();
@@ -124,7 +213,7 @@ function onDeviceReady() {
         // Triggered when the connection is ready
         function readyListener(e) {
             //
-            $('#progress').empty();
+            $('#app-message').text('').removeClass("error");
             //
             UPC = net.user1.orbiter.UPC;
             // listeners
@@ -142,11 +231,11 @@ function onDeviceReady() {
         // Triggered when the connection is closed
         function closeListener(e) {
             // TODO tarkempi syy miksi katkesi > kuten joinissa
-            //$('#progress').empty();
-			      $('#progress').empty().append('<li data-theme="e" data-role="content">Yhteys pelihuoneeseen katkesi</div>');
-            $('#progress').listview('refresh').bind('tap',
+            
+            $('#app-message').text('Yhteys pelihuoneeseen katkesi').addClass("error");
+            $('#app-message').bind('tap',
             function(event) {
-                $(this).empty();
+                $(this).text('').removeClass("error");
             });
 
             //
@@ -179,11 +268,11 @@ function onDeviceReady() {
             }
 
             if (err) {
-                $('#progress').empty().append('<li data-theme="e" data-role="content">' + msg + '</div>');
-                $('#progress').listview('refresh').bind('tap',
-                function(event) {
-                    $(this).empty();
-                });
+              $('#app-message').text(msg).addClass("error");
+              $('#app-message').bind('tap',
+              function(event) {
+                  $(this).text('').removeClass("error");
+              });
             }
 
             return;
@@ -201,15 +290,15 @@ function onDeviceReady() {
             msgManager.sendUPC(UPC.SET_CLIENT_ATTR, orbiter.getClientID(), "", "USERINFO", userinfo, roomID, "4");
 
             // disable inputs
-            $('input').textinput('disable');
+            //$('input').textinput('disable');
 
             // buttons
-            $lBtn = $('<button type="submit" name="submit" data-theme="e" value="leave">Poistu pelistä</button>');
+            //$lBtn = $('<button type="submit" name="submit" data-theme="e" value="leave">Poistu pelistä</button>');
 
             // add button and init it
-            $row = $('.form-button-row').empty();
-            $lBtn.appendTo($row);
-            $lBtn.button();
+            //$row = $('.form-button-row').empty();
+            //$lBtn.appendTo($row);
+            //$lBtn.button();
         }
 
         //==============================================================================
@@ -257,10 +346,10 @@ function onDeviceReady() {
 
         // onError: Failed to get the acceleration
         function onError() {
-            $('#progress').empty().append('<li data-theme="e" data-role="content">Kiihtyvyysanturin käyttäminen ei onnistunut</div>');
-            $('#progress').listview('refresh').bind('tap',
+            $('#app-message').text('Kiihtyvyysanturin käyttäminen ei onnistunut').addClass("error");
+            $('#app-message').bind('tap',
             function(event) {
-                $(this).empty();
+                $(this).text('').removeClass("error");
             });
         }
 
@@ -326,90 +415,28 @@ function onDeviceReady() {
             return result;
         }
 
-        //==============================================================================
-        // JOIN FUNCTION
-        //==============================================================================
-        function join($url, $form) {
-
-            $.ajax({
-                type: 'POST',
-                url: $url,
-                data: $form.serialize(),
-                dataType: 'xml',
-                cache: false,
-                beforeSend: function() {
-                    // show loader spinner
-                    $.mobile.showPageLoadingMsg();
-                },
-                error: function() {
-                    $('#progress').empty().append('<li data-theme="e" data-role="content">Verkkovirhe liityttäessä peliin</div>');
-                    $('#progress').listview('refresh').bind('tap',
-                    function(event) {
-                        $(this).empty();
-                    });
-                    $.mobile.hidePageLoadingMsg();
-                },
-                success: function(data) {
-                    // xml data var
-                    var $xml = $(data);
-
-                    if ($xml.text() == 0) {
-                        // 0 as xml value means that auth went wrong
-                        $('#progress').empty().append('<li data-theme="e" data-role="content">Käyttäjätunnus tai salasana oli virheellinen.</div>');
-                        $('#progress').listview('refresh').bind('tap',
-                        function(event) {
-                            $(this).empty();
-                        });
-                        $.mobile.hidePageLoadingMsg();
-                    } else if ($xml.text() == 1) {
-                        // 1 as xml value means that auth ok
-                        // user information from xml var
-                        var $user = $xml.find('user');
-                        // set user info to User obj
-                        User.username = $user.attr('username');
-                        User.nickname = $user.attr('nickname');
-                        User.user_id = $user.attr('id');
-
-                        // set username in localStorage for the next time
-                        window.localStorage.setItem('username', User.username);
-
-                        // union init
-                        init();
-
-                    } else {
-                        // xml is not readable so probably something wrong with sportti server or there is some connection problem
-                        $('#progress').empty().append('<li data-theme="e" data-role="content">Verkkovirhe liityttäessä peliin</div>');
-                        $('#progress').listview('refresh').bind('tap',
-                        function(event) {
-                            $(this).empty();
-                        });
-                        $.mobile.hidePageLoadingMsg();
-                    }
-                },
-                complete: function() {}
-            });
-
-            return false;
-        }
+        
 
         //==============================================================================
         // LEAVE FUNCTION
         //==============================================================================
         function leave() {
             // enable fields
-            $('input[type="text"], input[type="password"], input[type="number"]').textinput('enable');
+            //$('input[type="text"], input[type="password"], input[type="number"]').textinput('enable');
 
             // buttons
-            $jBtn = $('<button type="submit" name="submit" data-theme="b" value="join">Liity peliin</button>');
+            //$jBtn = $('<button type="submit" name="submit" data-theme="b" value="join">Liity peliin</button>');
 
             // add button and init it
-            $row = $('.form-button-row').empty();
-            $jBtn.appendTo($row);
-            $jBtn.button();
+            //$row = $('.form-button-row').empty();
+            //$jBtn.appendTo($row);
+            //$jBtn.button();
+            
+            User = {};
 
             orbiter.disconnect();
 
-            $.mobile.hidePageLoadingMsg();
+            //$.mobile.hidePageLoadingMsg();
 
             return false;
         }
@@ -433,7 +460,7 @@ function onDeviceReady() {
             }
         }
 
-        setInterval(check_network, 4000);
+   //     setInterval(check_network, 4000);
 
 		// set username ready if used before
 		(function user_vars() {
@@ -443,23 +470,7 @@ function onDeviceReady() {
 			}
 		})();
 		
-		
-		
-		window.plugins.barcodeScanner.scan( function(result) {
-		        alert("We got a barcode\n" +
-		                  "Result: " + result.text + "\n" +
-		                  "Format: " + result.format + "\n" +
-		                  "Cancelled: " + result.cancelled);
-		    }, function(error) {
-		        alert("Scanning failed: " + error);
-		    }
-		);
-		
-		window.plugins.barcodeScanner.scan();
-		
-		
-
     })(this.jQuery);
 
-}
+//}
 // deviceready

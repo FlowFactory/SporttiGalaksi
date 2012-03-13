@@ -24,13 +24,13 @@
 
 </head>
 <body>
-<div data-role="page">
+<div data-role="page" id="login-page">
 	<div data-role="content">	
 		<img src="img/sg_logo.png" class="logo">
 		<form id="frm" method="post" action="https://sportti.dreamschool.fi/galaxy/api/login" autocomplete="on">
 			<fieldset>
 			<div class="form-row form-input-row">
-			<ul id="progress" data-role="listview" data-theme="c" data-inset="true"></ul>
+			  <p id="login-message" class="message"></p>
 			</div>
 			<div class="form-row form-input-row">
 			<label for="username">K&auml;ytt&auml;j&auml;tunnus:</label>
@@ -40,16 +40,36 @@
 			<label for="passcode">Salasana:</label>
 			<input type="password" name="passcode" id="passcode" autocomplete="off" />
 			</div>
-			<div class="form-row form-input-row">
-			<label for="roomid">Pelihuone:</label>
-			<input type="number" name="roomid" id="roomid" autocomplete="off" />
-			</div>
 			<div class="form-row form-button-row">
-			<button type="button" name="submit" data-theme="b" value="join">Liity peliin</button>
+			<button type="button" id="login" name="submit" data-theme="b" value="join">Kirjaudu</button>
 			</fieldset>
 			</div>
 		</form>
 	</div>
 </div>
+
+<div data-role="page" id="app-page">
+  <div data-theme="b" data-role="header">
+    <a data-role="button" data-direction="reverse" data-transition="slide" href="#login-page" data-icon="home" data-iconpos="left">Palaa</a>
+    <h3>SporttiGalaksi</h3>
+  </div>
+	<div data-role="content">	
+	<div>
+	<img src="img/sg_logo.png" class="logo">
+  </div>
+	<form>
+		<div class="form-row form-input-row">
+		  <div class="form-row form-button-row">
+			  <p id="app-message" class="message"></p>
+			</div>
+			<div class="form-row form-button-row">
+			  <button type="button" name="read" id="read" data-theme="b">Lue koodi</button>
+			</fieldset>
+			</div>
+		</form>
+	</div>
+</div>
+
+
 </body>
 </html>
