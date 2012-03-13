@@ -15,6 +15,7 @@ BarcodeScanner.Encode = {
         EMAIL_TYPE: "EMAIL_TYPE",
         PHONE_TYPE: "PHONE_TYPE",
         SMS_TYPE: "SMS_TYPE",
+		INVALID_TYPE: "INVALID_TYPE",
         //  CONTACT_TYPE: "CONTACT_TYPE",  // TODO:  not implemented, requires passing a Bundle class from Javascriopt to Java
         //  LOCATION_TYPE: "LOCATION_TYPE" // TODO:  not implemented, requires passing a Bundle class from Javascriopt to Java
 };

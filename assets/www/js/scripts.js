@@ -2,11 +2,11 @@
 
 // Wait for PhoneGap to load
 //
-//document.addEventListener("deviceready", onDeviceReady, false);
+document.addEventListener("deviceready", onDeviceReady, false);
 
 // PhoneGap is ready
 //
-//function onDeviceReady() {
+function onDeviceReady() {
 
     (function($) {
 
@@ -14,7 +14,6 @@
         // VARIABLES = Union & PhoneGap & GameController
         //==============================================================================
         // user object for user vars
- 
         var User = {};
 
         // union vars
@@ -39,16 +38,18 @@
         //==============================================================================
         // FORM ACTIONS
         //==============================================================================
-/*        
         $(document).bind('pagebeforechange',
         function(event, data) {
             // prevent pagechange when form is submitted
             if (typeof data.toPage === "string") {
-                event.preventDefault();
+                if (data.toPage != "#app-page" && data.toPage != "#login-page" && data.toPage != "file:///android_asset/www/index.html#login-page") {
+                    event.preventDefault();
+                }
             }
         });
-*/
-        $("#login").live("tap", function(event) {
+
+        $("#login").live("tap",
+        function(event) {
 
             // get form values
             var $form = $(event.target).closest('form'),
@@ -81,16 +82,60 @@
             $('#login-message').text('').removeClass("error");
 
             // call join func
-            join($url, $form);
+            login($url, $form);
 
             // returning something
             return false;
         });
-        
+
+        $("#read").live("tap",
+        function(event) {
+
+            $('#app-message').text('').removeClass("text error success");
+
+            window.plugins.barcodeScanner.scan(function(result) {
+
+                if (result.cancelled) {
+                    // user cancelled code reading operation
+                    $('#app-message').text('Koodia ei luettu!').removeClass("text success").addClass("error");
+                } else {
+                    // read json string
+                    var obj = jQuery.parseJSON(result.text);
+
+                    if (!obj || result.format == "INVALID_TYPE") {
+                        // json string invalid
+                        $('#app-message').text('Koodi oli virheellinen!').addClass("error").removeClass("text success");
+                    } else {
+						console.log(result.text);
+                        console.log('roomId:' + obj.roomId + ', action:' + obj.action);
+
+                        if (obj.action == "join") {
+
+                            var title = !!obj.title ? ': ' + obj.title: '.';
+
+                            $('#app-message').text('Liitytään peliin' + title).removeClass("error success").addClass("text");
+
+                            // union init
+                            roomID = obj.roomId;
+                            init();
+
+                        } else {
+                            $('#app-message').text('Luettu koodi:' + result.text).removeClass("error success").addClass("text");
+                        }
+                    }
+                }
+                /* alert("We got a barcode\n" + "Result: " + result.text + "\n" + "Format: " + result.format + "\n" + "Cancelled: " + result.cancelled); */
+            },
+            function(error) {
+                $('#app-message').text("Koodin lukeminen epäonnistui (" + error + ")").removeClass("text success").addClass("error");
+            });
+
+        });
+
         //==============================================================================
-        // JOIN FUNCTION
+        // LOGIN FUNCTION
         //==============================================================================
-        function join($url, $form) {
+        function login($url, $form) {
 
             $.ajax({
                 type: 'POST',
@@ -98,29 +143,25 @@
                 data: $form.serialize(),
                 dataType: 'xml',
                 cache: false,
-              //  timeout: 5000,
+                //  timeout: 5000,
                 beforeSend: function() {
-                    // show loader spinner
-                    $.mobile.showPageLoadingMsg();
+                    $('#login-message').text('Kirjaudutaan galaksiin...').removeClass("error success").addClass("text");
                 },
                 error: function() {
-                    $('#login-message').text('Verkkovirhe kirjauduttaessa peliin').addClass("error");
+                    $('#login-message').text('Verkkovirhe kirjauduttaessa peliin').addClass("error").removeClass("success text");
                     $('#login-message').bind('tap',
                     function(event) {
                         $(this).text('').removeClass("error");
                         $('input[type="text"], input[type="password"]').removeClass('error');
                     });
-                    $.mobile.hidePageLoadingMsg();
                 },
                 success: function(data) {
                     // xml data var
                     var $xml = $(data);
-                    
-                    $.mobile.hidePageLoadingMsg();
 
                     if ($xml.text() == 0) {
                         // 0 as xml value means that auth went wrong
-                        $('#login-message').text('Käyttäjätunnus tai salasana oli virheellinen.').addClass("error");
+                        $('#login-message').text('Käyttäjätunnus tai salasana oli virheellinen!').removeClass("text success").addClass("error");
                         $('#login-message').bind('tap',
                         function(event) {
                             $(this).text('').removeClass("error");
@@ -128,6 +169,9 @@
                         });
 
                     } else if ($xml.text() == 1) {
+
+                        $('#login-message').text('Kirjautuminen onnistui!').addClass("success").addClass("error text");
+
                         // 1 as xml value means that auth ok
                         // user information from xml var
                         var $user = $xml.find('user');
@@ -139,56 +183,51 @@
                         // set username in localStorage for the next time
                         window.localStorage.setItem('username', User.username);
 
-                        $.mobile.changePage('#app-page');
+                        $('#login-message').text('').removeClass("text success error");
+                        
+						$('#app-message').text('').removeClass("text success error");
+						$('#app-message').text('Heippa ' + User.nickname + "!").removeClass("error text").addClass("success");
 
-                        // union init
-                        // init();
+                        $.mobile.changePage('#app-page');
 
                     } else {
                         // xml is not readable so probably something wrong with sportti server or there is some connection problem
-                        $('#login-message').text('Verkkovirhe kirjauduttaessa peliin').addClass("error");
+                        $('#login-message').text('Verkkovirhe kirjauduttaessa peliin!').addClass("error").removeClass("text success");
                         $('#login-message').bind('tap',
                         function(event) {
                             $(this).text('').removeClass("error");
                             $('input[type="text"], input[type="password"]').removeClass('error');
                         });
-                        $.mobile.hidePageLoadingMsg();
+
                     }
-                },
-                complete: function() {}
+                }
             });
 
             return false;
         }
-        
-        
-        
-        $("#read").live("tap", function(event) {
-          //
-          $('#app-message').text('').removeClass("error");
-          //
-          window.plugins.barcodeScanner.scan( function(result) {
-            $('#app-message').text(result.text);
-      		     /*   alert("We got a barcode\n" +
-      		                  "Result: " + result.text + "\n" +
-      		                  "Format: " + result.format + "\n" +
-      		                  "Cancelled: " + result.cancelled); */
-      		    }, function(error) {
-      		      $('#app-message').text("Scanning failed: " + error).addClass("error");
-      		    }
-      		);
-          
-        });
-        
+
+        //==============================================================================
+        // LEAVE FUNCTION
+        //==============================================================================
+        function leave() {
+
+            User = {};
+
+            orbiter.disconnect();
+
+            $.mobile.changePage('#login-page');
+
+            return false;
+        }
+
         //==============================================================================
         // INITIALIZATION
         //==============================================================================
         // Wait for PhoneGap to load function onLoad() { document.addEventListener("deviceready", onDeviceReady, false); }
         // PhoneGap is ready function onDeviceReady() { init(); }
-
         function init() {
             //
-            roomID = $('#roomid').val();
+            // roomID = $('#roomid').val();
             // Create Orbiter object
             orbiter = new net.user1.orbiter.Orbiter();
             // Register for connection events
@@ -196,14 +235,13 @@
             orbiter.addEventListener(net.user1.orbiter.OrbiterEvent.CLOSE, closeListener, this);
             // Register for incoming messages from Union
             msgManager = orbiter.getMessageManager();
-            // 
-
-			//if (typeof WebSocket === "undefined") {
-			//  alert('Browser does not support WebSockets!');
-			//}
-			// 
-			//orbiter.disableHTTPFailover();
-			// Connect to Union
+            //
+            //if (typeof WebSocket === "undefined") {
+            //  alert('Browser does not support WebSockets!');
+            //}
+            //
+            //orbiter.disableHTTPFailover();
+            // Connect to Union
             orbiter.connect("socket.dreamschool.fi", 80);
         }
 
@@ -213,7 +251,7 @@
         // Triggered when the connection is ready
         function readyListener(e) {
             //
-            $('#app-message').text('').removeClass("error");
+            $('#app-message').text('').removeClass("error success text");
             //
             UPC = net.user1.orbiter.UPC;
             // listeners
@@ -224,22 +262,12 @@
             clientID = orbiter.getClientID();
             // Join the game room
             msgManager.sendUPC(UPC.JOIN_ROOM, roomID);
-            //
-            $.mobile.hidePageLoadingMsg();
         }
 
         // Triggered when the connection is closed
         function closeListener(e) {
             // TODO tarkempi syy miksi katkesi > kuten joinissa
-            
-            $('#app-message').text('Yhteys pelihuoneeseen katkesi').addClass("error");
-            $('#app-message').bind('tap',
-            function(event) {
-                $(this).text('').removeClass("error");
-            });
-
-            //
-            leave();
+            $('#app-message').text('Yhteys pelihuoneeseen katkesi!').addClass("error").removeClass("text success");
         }
 
         // Triggered when the user has joined the room
@@ -250,29 +278,25 @@
             switch (status)
             {
             case "ROOM_NOT_FOUND":
-                msg = "Pelihuonetta ei löytynyt";
+                msg = "Pelihuonetta ei löytynyt!";
                 err = 1;
                 break;
             case "ERROR":
-                msg = "Palvelimella tapahtui virhe";
+                msg = "Palvelimella tapahtui virhe!";
                 err = 1;
                 break;
             case "ROOM_FULL":
-                msg = "Pelihuone on täynnä";
+                msg = "Pelihuone on täynnä!";
                 err = 1;
                 break;
             case "ALREADY_IN_ROOM":
-                msg = "Olet jo pelihuoneessa";
+                msg = "Olet jo pelihuoneessa!";
                 err = 1;
                 break;
             }
 
             if (err) {
-              $('#app-message').text(msg).addClass("error");
-              $('#app-message').bind('tap',
-              function(event) {
-                  $(this).text('').removeClass("error");
-              });
+                $('#app-message').text(msg).addClass("error").removeClass("text success");
             }
 
             return;
@@ -285,26 +309,26 @@
         function joinedRoomListener() {
             // set user´s information
             var userinfo = User.user_id + ';' + User.username + ';' + User.nickname;
+			//console.log("ROOMID: "+roomID + ', USERID: ' + userinfo);
 
             // send user´s information
             msgManager.sendUPC(UPC.SET_CLIENT_ATTR, orbiter.getClientID(), "", "USERINFO", userinfo, roomID, "4");
 
-            // disable inputs
-            //$('input').textinput('disable');
+			// TEMP KOSKA STATE KUUNTELIJA ON KUOLLUT
+			// Update acceleration
+            var options = {
+                frequency: 120
+            };
+			startWatch();
 
-            // buttons
-            //$lBtn = $('<button type="submit" name="submit" data-theme="e" value="leave">Poistu pelistä</button>');
-
-            // add button and init it
-            //$row = $('.form-button-row').empty();
-            //$lBtn.appendTo($row);
-            //$lBtn.button();
+            $('#app-message').text('Liityit peliin!').removeClass("error text").addClass("success");
         }
 
         //==============================================================================
         // GAME STATE LISTENER
         //==============================================================================
         function stateListener(fromGame, stateMsg) {
+			console.log("STATE LISTENER YO! TÄTÄ EI TULE KOSKAAN KOSKA STATE KUUNTELIJA EI LAUKEA");
             if (stateMsg == "play") {
                 gameState = "play";
                 startWatch();
@@ -320,14 +344,12 @@
         //function jump() {
         //    msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "jump");
         //}
-
         // Start watching the acceleration
         function startWatch() {
             // Update acceleration
             var options = {
                 frequency: 120
             };
-
             watchID = navigator.accelerometer.watchAcceleration(onSuccess, onError, options);
         }
 
@@ -346,11 +368,7 @@
 
         // onError: Failed to get the acceleration
         function onError() {
-            $('#app-message').text('Kiihtyvyysanturin käyttäminen ei onnistunut').addClass("error");
-            $('#app-message').bind('tap',
-            function(event) {
-                $(this).text('').removeClass("error");
-            });
+            $('#app-message').text('Kiihtyvyysanturin käyttäminen ei onnistunut!').addClass("error").removeClass("text success");
         }
 
         // remember values for jump action
@@ -415,32 +433,6 @@
             return result;
         }
 
-        
-
-        //==============================================================================
-        // LEAVE FUNCTION
-        //==============================================================================
-        function leave() {
-            // enable fields
-            //$('input[type="text"], input[type="password"], input[type="number"]').textinput('enable');
-
-            // buttons
-            //$jBtn = $('<button type="submit" name="submit" data-theme="b" value="join">Liity peliin</button>');
-
-            // add button and init it
-            //$row = $('.form-button-row').empty();
-            //$jBtn.appendTo($row);
-            //$jBtn.button();
-            
-            User = {};
-
-            orbiter.disconnect();
-
-            //$.mobile.hidePageLoadingMsg();
-
-            return false;
-        }
-
         var state = "";
         function check_network() {
             var networkState = navigator.network.connection.type;
@@ -460,17 +452,17 @@
             }
         }
 
-   //     setInterval(check_network, 4000);
+        // setInterval(check_network, 4000);
 
-		// set username ready if used before
-		(function user_vars() {
-			var uname = window.localStorage.getItem('username');
-			if ( !! uname) {
-		    	$('#username').val(uname);
-			}
-		})();
-		
+        // set username ready if used before
+        (function user_vars() {
+            var uname = window.localStorage.getItem('username');
+            if ( !! uname) {
+                $('#username').val(uname);
+            }
+        })();
+
     })(this.jQuery);
 
-//}
+}
 // deviceready
