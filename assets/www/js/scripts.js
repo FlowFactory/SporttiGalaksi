@@ -27,6 +27,9 @@ function onDeviceReady() {
         var player;
         var gameState;
 
+		var lobbyID;
+		var gameID;
+
         // acceleration vars
         var oldx = 0;
         var oldy = 0;
@@ -107,8 +110,8 @@ function onDeviceReady() {
                         $('#app-message').text('Koodi oli virheellinen!').addClass("error").removeClass("text success");
                     } else {
 						console.log(result.text);
-                        console.log('roomId:' + obj.roomId + ', action:' + obj.action);
 
+						// join
                         if (obj.action == "join") {
 
                             var title = !!obj.title ? ': ' + obj.title: '.';
@@ -118,7 +121,31 @@ function onDeviceReady() {
                             // union init
                             roomID = obj.roomId;
                             init();
-
+						}
+						// leave
+						else if (obj.action == "close") {
+							
+							if(!!roomID && roomID == obj.roomId) {
+								$('#app-message').text('').removeClass("error success text");
+								// send message to game
+								msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "CLOSE_GAME", obj.roomId, "true", "", User.nickname);
+							} else {
+								$('#app-message').text('Et voi sulkea pelihuonetta!').removeClass("success text").addClass("error");
+							}
+						}
+						// open
+						else if (obj.action == "open") {
+							
+							$('#app-message').text('Avataan peliä.').addClass("text").removeClass("error success");
+							
+							lobbyID = obj.roomId;
+							gameID = obj.gameId;
+							
+                            initLobby();
+							// send message to game
+							//msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "CLOSE_GAME", obj.roomId, "true", "", User.nickname);
+							
+						
                         } else {
                             $('#app-message').text('Luettu koodi:' + result.text).removeClass("error success").addClass("text");
                         }
@@ -215,6 +242,8 @@ function onDeviceReady() {
 
             orbiter.disconnect();
 
+			roomID = 0;
+
             $.mobile.changePage('#login-page');
 
             return false;
@@ -242,8 +271,113 @@ function onDeviceReady() {
             //
             //orbiter.disableHTTPFailover();
             // Connect to Union
-            orbiter.connect("socket.dreamschool.fi", 80);
+            orbiter.connect("socket.dreamschool.fi", 443);
         }
+
+		function initLobby() {
+            //
+            // roomID = $('#roomid').val();
+            // Create Orbiter object
+            orbiter = new net.user1.orbiter.Orbiter();
+            // Register for connection events
+            orbiter.addEventListener(net.user1.orbiter.OrbiterEvent.READY, readyLobbyListener, this);
+            orbiter.addEventListener(net.user1.orbiter.OrbiterEvent.CLOSE, closeLobbyListener, this);
+            // Register for incoming messages from Union
+            msgManager = orbiter.getMessageManager();
+            //
+            //orbiter.disableHTTPFailover();
+            // Connect to Union
+            orbiter.connect("socket.dreamschool.fi", 443);
+        }
+
+		// Triggered when the connection is ready
+        function readyLobbyListener(e) {
+            //
+            $('#app-message').text('Avataan peliä..').addClass("text").removeClass("error success");
+            //
+            UPC = net.user1.orbiter.UPC;
+            // listeners
+            msgManager.addMessageListener(UPC.JOINED_ROOM, joinedLobbyListener, this);
+            //msgManager.addMessageListener("STATE_MESSAGE", stateListener, this, [roomID]);
+            msgManager.addMessageListener(UPC.JOIN_ROOM_RESULT, joinLobbyResultListener, this);
+            //
+            clientID = orbiter.getClientID();
+            // Join the game room
+            msgManager.sendUPC(UPC.JOIN_ROOM, lobbyID);
+        }
+
+		// Triggered when the user has joined the room
+        function joinLobbyResultListener(roomID, status) {
+            var err = 0,
+            msg = "";
+
+            switch (status)
+            {
+            case "ROOM_NOT_FOUND":
+                msg = "Pelihuonetta ei löytynyt!";
+                err = 1;
+                break;
+            case "ERROR":
+                msg = "Palvelimella tapahtui virhe!";
+                err = 1;
+                break;
+            case "ROOM_FULL":
+                msg = "Pelihuone on täynnä!";
+                err = 1;
+                break;
+            case "ALREADY_IN_ROOM":
+                msg = "Olet jo pelihuoneessa!";
+                err = 1;
+                break;
+            }
+
+            if (err) {
+                $('#app-message').text(msg).addClass("error").removeClass("text success");
+            }
+
+            return;
+        }
+
+		function joinedLobbyListener() {
+			
+			$('#app-message').text('Avataan peliä...').removeClass("error text").addClass("success");
+			
+			msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "CHAT_MESSAGE", lobbyID, "true", "", gameID);
+			
+			setTimeout(clearMessage(), 3000);
+
+        }
+
+		function clearMessage() {
+			$('#app-message').text('').removeClass("error text success");
+		}
+
+		function closeLobbyListener(e) {
+            $('#app-message').text('').removeClass("text success error");
+        }
+
+        //==============================================================================
+        //  ROOM EVENT LISTENER
+        //==============================================================================
+        // Triggered when a JOINED_ROOM message is received
+        function joinedRoomListener() {
+            // set user´s information
+            var userinfo = User.user_id + ';' + User.username + ';' + User.nickname;
+			//console.log("ROOMID: "+roomID + ', USERID: ' + userinfo);
+
+            // send user´s information
+            msgManager.sendUPC(UPC.SET_CLIENT_ATTR, orbiter.getClientID(), "", "USERINFO", userinfo, roomID, "4");
+
+			// TEMP KOSKA STATE KUUNTELIJA ON KUOLLUT
+			// Update acceleration
+            //var options = {
+            //    frequency: 120
+            //};
+			//startWatch();
+
+            $('#app-message').text('Liityit peliin!').removeClass("error text").addClass("success");
+        }
+		
 
         //==============================================================================
         // ORBITER EVENT LISTENERS
@@ -267,7 +401,7 @@ function onDeviceReady() {
         // Triggered when the connection is closed
         function closeListener(e) {
             // TODO tarkempi syy miksi katkesi > kuten joinissa
-            $('#app-message').text('Yhteys pelihuoneeseen katkesi!').addClass("error").removeClass("text success");
+            $('#app-message').text('Poistuit pelihuoneesta!').addClass("error").removeClass("text success");
         }
 
         // Triggered when the user has joined the room
@@ -316,10 +450,10 @@ function onDeviceReady() {
 
 			// TEMP KOSKA STATE KUUNTELIJA ON KUOLLUT
 			// Update acceleration
-            var options = {
-                frequency: 120
-            };
-			startWatch();
+            //var options = {
+            //    frequency: 120
+            //};
+			//startWatch();
 
             $('#app-message').text('Liityit peliin!').removeClass("error text").addClass("success");
         }
@@ -328,7 +462,7 @@ function onDeviceReady() {
         // GAME STATE LISTENER
         //==============================================================================
         function stateListener(fromGame, stateMsg) {
-			console.log("STATE LISTENER YO! TÄTÄ EI TULE KOSKAAN KOSKA STATE KUUNTELIJA EI LAUKEA");
+			console.log("STATE LISTENER YO!");
             if (stateMsg == "play") {
                 gameState = "play";
                 startWatch();
