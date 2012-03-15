@@ -108,7 +108,6 @@ public class BarcodeScanner extends Plugin {
                     obj.put("format", intent.getStringExtra("SCAN_RESULT_FORMAT"));
                     obj.put("cancelled", false);
                 } catch(JSONException e) {
-                    //e.printStackTrace();
                     //Log.d(LOG_TAG, "This should never happen");
                 }
 
