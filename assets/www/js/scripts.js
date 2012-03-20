@@ -142,11 +142,17 @@ function onDeviceReady() {
 							gameID = obj.gameId;
 							
                             initLobby();
-							// send message to game
-							//msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "CLOSE_GAME", obj.roomId, "true", "", User.nickname);
-							
-						
-                        } else {
+	
+                        }
+						// start game
+						else if (obj.action == "start") {
+
+							$('#app-message').text('').removeClass("text error success");
+
+							msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", obj.gameId, "true", "", "START_GAME");
+
+                        }
+ 						else {
                             $('#app-message').text('Luettu koodi:' + result.text).removeClass("error success").addClass("text");
                         }
                     }
