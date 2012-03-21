@@ -27,8 +27,8 @@ function onDeviceReady() {
         var player;
         var gameState;
 
-		var lobbyID;
-		var gameID;
+        var lobbyID;
+        var gameID;
 
         // acceleration vars
         var oldx = 0;
@@ -109,9 +109,9 @@ function onDeviceReady() {
                         // json string invalid
                         $('#app-message').text('Koodi oli virheellinen!').addClass("error").removeClass("text success");
                     } else {
-						console.log(result.text);
+                        console.log(result.text);
 
-						// join
+                        // join
                         if (obj.action == "join") {
 
                             var title = !!obj.title ? ': ' + obj.title: '.';
@@ -121,38 +121,38 @@ function onDeviceReady() {
                             // union init
                             roomID = obj.roomId;
                             init();
-						}
-						// leave
-						else if (obj.action == "close") {
-							
-							if(!!roomID && roomID == obj.roomId) {
-								$('#app-message').text('').removeClass("error success text");
-								// send message to game
-								msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "CLOSE_GAME", obj.roomId, "true", "", User.nickname);
-							} else {
-								$('#app-message').text('Et voi sulkea pelihuonetta!').removeClass("success text").addClass("error");
-							}
-						}
-						// open
-						else if (obj.action == "open") {
-							
-							$('#app-message').text('Avataan peliä.').addClass("text").removeClass("error success");
-							
-							lobbyID = obj.roomId;
-							gameID = obj.gameId;
-							
+                        }
+                        // leave
+                        else if (obj.action == "close") {
+
+                            if ( !! roomID && roomID == obj.roomId) {
+                                $('#app-message').text('').removeClass("error success text");
+                                // send message to game
+                                msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "CLOSE_GAME", obj.roomId, "true", "", User.nickname);
+                            } else {
+                                $('#app-message').text('Et voi sulkea pelihuonetta!').removeClass("success text").addClass("error");
+                            }
+                        }
+                        // open
+                        else if (obj.action == "open") {
+
+                            $('#app-message').text('Avataan peliä.').addClass("text").removeClass("error success");
+
+                            lobbyID = obj.roomId;
+                            gameID = obj.gameId;
+
                             initLobby();
-	
-                        }
-						// start game
-						else if (obj.action == "start") {
-
-							$('#app-message').text('').removeClass("text error success");
-
-							msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", obj.gameId, "true", "", "START_GAME");
 
                         }
- 						else {
+                        // start game
+                        else if (obj.action == "start") {
+
+                            $('#app-message').text('').removeClass("text error success");
+
+                            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", obj.gameId, "true", "", "START_GAME");
+
+                        }
+                        else {
                             $('#app-message').text('Luettu koodi:' + result.text).removeClass("error success").addClass("text");
                         }
                     }
@@ -217,9 +217,9 @@ function onDeviceReady() {
                         window.localStorage.setItem('username', User.username);
 
                         $('#login-message').text('').removeClass("text success error");
-                        
-						$('#app-message').text('').removeClass("text success error");
-						$('#app-message').text('Heippa ' + User.nickname + "!").removeClass("error text").addClass("success");
+
+                        $('#app-message').text('').removeClass("text success error");
+                        $('#app-message').text('Heippa ' + User.nickname + "!").removeClass("error text").addClass("success");
 
                         $.mobile.changePage('#app-page');
 
@@ -248,7 +248,7 @@ function onDeviceReady() {
 
             orbiter.disconnect();
 
-			roomID = 0;
+            roomID = 0;
 
             $.mobile.changePage('#login-page');
 
@@ -280,7 +280,7 @@ function onDeviceReady() {
             orbiter.connect("socket.dreamschool.fi", 443);
         }
 
-		function initLobby() {
+        function initLobby() {
             //
             // roomID = $('#roomid').val();
             // Create Orbiter object
@@ -296,7 +296,7 @@ function onDeviceReady() {
             orbiter.connect("socket.dreamschool.fi", 443);
         }
 
-		// Triggered when the connection is ready
+        // Triggered when the connection is ready
         function readyLobbyListener(e) {
             //
             $('#app-message').text('Avataan peliä..').addClass("text").removeClass("error success");
@@ -312,7 +312,7 @@ function onDeviceReady() {
             msgManager.sendUPC(UPC.JOIN_ROOM, lobbyID);
         }
 
-		// Triggered when the user has joined the room
+        // Triggered when the user has joined the room
         function joinLobbyResultListener(roomID, status) {
             var err = 0,
             msg = "";
@@ -344,21 +344,21 @@ function onDeviceReady() {
             return;
         }
 
-		function joinedLobbyListener() {
-			
-			$('#app-message').text('Avataan peliä...').removeClass("error text").addClass("success");
-			
-			msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "CHAT_MESSAGE", lobbyID, "true", "", gameID);
-			
-			setTimeout(clearMessage(), 3000);
+        function joinedLobbyListener() {
+
+            $('#app-message').text('Avataan peliä...').removeClass("error text").addClass("success");
+
+            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "CHAT_MESSAGE", lobbyID, "true", "", gameID);
+
+            setTimeout(clearMessage(), 3000);
 
         }
 
-		function clearMessage() {
-			$('#app-message').text('').removeClass("error text success");
-		}
+        function clearMessage() {
+            $('#app-message').text('').removeClass("error text success");
+        }
 
-		function closeLobbyListener(e) {
+        function closeLobbyListener(e) {
             $('#app-message').text('').removeClass("text success error");
         }
 
@@ -369,21 +369,19 @@ function onDeviceReady() {
         function joinedRoomListener() {
             // set user´s information
             var userinfo = User.user_id + ';' + User.username + ';' + User.nickname;
-			//console.log("ROOMID: "+roomID + ', USERID: ' + userinfo);
-
+            //console.log("ROOMID: "+roomID + ', USERID: ' + userinfo);
             // send user´s information
             msgManager.sendUPC(UPC.SET_CLIENT_ATTR, orbiter.getClientID(), "", "USERINFO", userinfo, roomID, "4");
 
-			// TEMP KOSKA STATE KUUNTELIJA ON KUOLLUT
-			// Update acceleration
+            // TEMP KOSKA STATE KUUNTELIJA ON KUOLLUT
+            // Update acceleration
             //var options = {
             //    frequency: 120
             //};
-			//startWatch();
-
+            //startWatch();
             $('#app-message').text('Liityit peliin!').removeClass("error text").addClass("success");
         }
-		
+
 
         //==============================================================================
         // ORBITER EVENT LISTENERS
@@ -449,18 +447,16 @@ function onDeviceReady() {
         function joinedRoomListener() {
             // set user´s information
             var userinfo = User.user_id + ';' + User.username + ';' + User.nickname;
-			//console.log("ROOMID: "+roomID + ', USERID: ' + userinfo);
-
+            //console.log("ROOMID: "+roomID + ', USERID: ' + userinfo);
             // send user´s information
             msgManager.sendUPC(UPC.SET_CLIENT_ATTR, orbiter.getClientID(), "", "USERINFO", userinfo, roomID, "4");
 
-			// TEMP KOSKA STATE KUUNTELIJA ON KUOLLUT
-			// Update acceleration
+            // TEMP KOSKA STATE KUUNTELIJA ON KUOLLUT
+            // Update acceleration
             //var options = {
             //    frequency: 120
             //};
-			//startWatch();
-
+            //startWatch();
             $('#app-message').text('Liityit peliin!').removeClass("error text").addClass("success");
         }
 
@@ -468,7 +464,7 @@ function onDeviceReady() {
         // GAME STATE LISTENER
         //==============================================================================
         function stateListener(fromGame, stateMsg) {
-			console.log("STATE LISTENER YO!");
+            console.log("STATE LISTENER YO!");
             if (stateMsg == "play") {
                 gameState = "play";
                 startWatch();
@@ -593,7 +589,6 @@ function onDeviceReady() {
         }
 
         // setInterval(check_network, 4000);
-
         // set username ready if used before
         (function user_vars() {
             var uname = window.localStorage.getItem('username');
