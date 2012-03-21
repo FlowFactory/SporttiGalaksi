@@ -147,7 +147,12 @@ function onDeviceReady() {
 
                             $('#app-message').text('').removeClass("text error success");
 
-                            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", obj.gameId, "true", "", "START");
+                            if( typeof msgManager !== "undefined" && roomID == obj.roomId ) {
+                              msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", obj.roomId, "true", "", "START");
+                            } else {
+                              // error if not joined first
+                              $('#app-message').text("Vain peliin liittyneet voivat aloittaa pelin!").removeClass("text success").addClass("error");
+                            }
 
                         }
                         else {
@@ -443,7 +448,7 @@ function onDeviceReady() {
         // GAME STATE LISTENER
         //==============================================================================
         function stateListener(fromGame, stateMsg) {
-            console.log("STATE LISTENER YO!");
+            //console.log("STATE LISTENER YO!");
             if (stateMsg == "play") {
                 gameState = "play";
                 startWatch();
