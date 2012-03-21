@@ -1,11 +1,9 @@
 /* SporttiGalaksi GameController */
 
 // Wait for PhoneGap to load
-//
 document.addEventListener("deviceready", onDeviceReady, false);
 
 // PhoneGap is ready
-//
 function onDeviceReady() {
 
     (function($) {
@@ -270,19 +268,13 @@ function onDeviceReady() {
             orbiter.addEventListener(net.user1.orbiter.OrbiterEvent.CLOSE, closeListener, this);
             // Register for incoming messages from Union
             msgManager = orbiter.getMessageManager();
-            //
-            //if (typeof WebSocket === "undefined") {
-            //  alert('Browser does not support WebSockets!');
-            //}
-            //
+            
             //orbiter.disableHTTPFailover();
             // Connect to Union
             orbiter.connect("socket.dreamschool.fi", 443);
         }
 
         function initLobby() {
-            //
-            // roomID = $('#roomid').val();
             // Create Orbiter object
             orbiter = new net.user1.orbiter.Orbiter();
             // Register for connection events
@@ -345,13 +337,12 @@ function onDeviceReady() {
         }
 
         function joinedLobbyListener() {
-
+            //
             $('#app-message').text('Avataan peliä...').removeClass("error text").addClass("success");
-
-            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "CHAT_MESSAGE", lobbyID, "true", "", gameID);
-
+            //
+            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", lobbyID, "true", "", gameID);
+            //
             setTimeout(clearMessage(), 3000);
-
         }
 
         function clearMessage() {
@@ -369,16 +360,10 @@ function onDeviceReady() {
         function joinedRoomListener() {
             // set user´s information
             var userinfo = User.user_id + ';' + User.username + ';' + User.nickname;
-            //console.log("ROOMID: "+roomID + ', USERID: ' + userinfo);
+            // console.log("ROOMID: "+roomID + ', USERID: ' + userinfo);
             // send user´s information
             msgManager.sendUPC(UPC.SET_CLIENT_ATTR, orbiter.getClientID(), "", "USERINFO", userinfo, roomID, "4");
 
-            // TEMP KOSKA STATE KUUNTELIJA ON KUOLLUT
-            // Update acceleration
-            //var options = {
-            //    frequency: 120
-            //};
-            //startWatch();
             $('#app-message').text('Liityit peliin!').removeClass("error text").addClass("success");
         }
 
@@ -447,16 +432,10 @@ function onDeviceReady() {
         function joinedRoomListener() {
             // set user´s information
             var userinfo = User.user_id + ';' + User.username + ';' + User.nickname;
-            //console.log("ROOMID: "+roomID + ', USERID: ' + userinfo);
+            // console.log("ROOMID: "+roomID + ', USERID: ' + userinfo);
             // send user´s information
             msgManager.sendUPC(UPC.SET_CLIENT_ATTR, orbiter.getClientID(), "", "USERINFO", userinfo, roomID, "4");
-
-            // TEMP KOSKA STATE KUUNTELIJA ON KUOLLUT
-            // Update acceleration
-            //var options = {
-            //    frequency: 120
-            //};
-            //startWatch();
+            // 
             $('#app-message').text('Liityit peliin!').removeClass("error text").addClass("success");
         }
 
