@@ -147,7 +147,7 @@ function onDeviceReady() {
 
                             $('#app-message').text('').removeClass("text error success");
 
-                            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", obj.gameId, "true", "", "START_GAME");
+                            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", obj.gameId, "true", "", "START");
 
                         }
                         else {
