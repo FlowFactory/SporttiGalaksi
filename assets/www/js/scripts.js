@@ -126,7 +126,7 @@ function onDeviceReady() {
                             if ( !! roomID && roomID == obj.roomId) {
                                 $('#app-message').text('').removeClass("error success text");
                                 // send message to game
-                                msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "CLOSE_GAME", obj.roomId, "true", "", User.nickname);
+                                msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", obj.roomId, "true", "", 'CLOSE');
                             } else {
                                 $('#app-message').text('Et voi sulkea pelihuonetta!').removeClass("success text").addClass("error");
                             }
