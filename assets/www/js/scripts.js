@@ -46,6 +46,13 @@ function onDeviceReady() {
                 if (data.toPage != "#app-page" && data.toPage != "#login-page" && data.toPage != "file:///android_asset/www/index.html#login-page") {
                     event.preventDefault();
                 }
+
+				if (data.toPage == "#login-page" || data.toPage == "file:///android_asset/www/index.html#login-page") {
+					console.log('EVENT pagebeforechange: login-page');
+	                User = {};
+		            orbiter.disconnect();
+		            roomID = 0;
+	            }
             }
         });
 
@@ -148,6 +155,7 @@ function onDeviceReady() {
                             $('#app-message').text('').removeClass("text error success");
 
                             if( typeof msgManager !== "undefined" && roomID == obj.roomId ) {
+							  // 
                               msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", obj.roomId, "true", "", "START");
                             } else {
                               // error if not joined first
