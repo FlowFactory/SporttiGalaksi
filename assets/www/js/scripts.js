@@ -47,13 +47,16 @@ function onDeviceReady() {
                     event.preventDefault();
                 }
 
-				if (data.toPage == "#login-page" || data.toPage == "file:///android_asset/www/index.html#login-page") {
-					      console.log('EVENT pagebeforechange: login-page');
-	              User = {};
-	              orbiter.leave();
-		            orbiter.disconnect();
-		            roomID = 0;
-	            }
+                if (data.toPage == "#login-page" || data.toPage == "file:///android_asset/www/index.html#login-page") {
+                    console.log('EVENT pagebeforechange: login-page');
+                    User = {};
+
+                    if (typeof msgManager !== "undefined") {
+                        msgManager.sendUPC(UPC.LEAVE_ROOM, roomID);
+                    }
+
+                    roomID = 0;
+                }
             }
         });
 
@@ -155,12 +158,12 @@ function onDeviceReady() {
 
                             $('#app-message').text('').removeClass("text error success");
 
-                            if( typeof msgManager !== "undefined" && roomID == obj.roomId ) {
-							  // 
-                              msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", obj.roomId, "true", "", "START");
+                            if (typeof msgManager !== "undefined" && roomID == obj.roomId) {
+                                //
+                                msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", obj.roomId, "true", "", "START");
                             } else {
-                              // error if not joined first
-                              $('#app-message').text("Vain peliin liittyneet voivat aloittaa pelin!").removeClass("text success").addClass("error");
+                                // error if not joined first
+                                $('#app-message').text("Vain peliin liittyneet voivat aloittaa pelin!").removeClass("text success").addClass("error");
                             }
 
                         }
@@ -257,7 +260,7 @@ function onDeviceReady() {
         function leave() {
 
             User = {};
-            
+
             orbiter.leave();
 
             orbiter.disconnect();
@@ -284,7 +287,7 @@ function onDeviceReady() {
             orbiter.addEventListener(net.user1.orbiter.OrbiterEvent.CLOSE, closeListener, this);
             // Register for incoming messages from Union
             msgManager = orbiter.getMessageManager();
-            
+
             //orbiter.disableHTTPFailover();
             // Connect to Union
             orbiter.connect("socket.dreamschool.fi", 443);
@@ -451,7 +454,7 @@ function onDeviceReady() {
             // console.log("ROOMID: "+roomID + ', USERID: ' + userinfo);
             // send user´s information
             msgManager.sendUPC(UPC.SET_CLIENT_ATTR, orbiter.getClientID(), "", "USERINFO", userinfo, roomID, "4");
-            // 
+            //
             $('#app-message').text('Liityit peliin!').removeClass("error text").addClass("success");
         }
 
@@ -591,6 +594,13 @@ function onDeviceReady() {
                 $('#username').val(uname);
             }
         })();
+
+        // run every time when page is unloaded a.k.a changed/leaved
+        $(window).unload(function() {
+            if (typeof msgManager !== "undefined") {
+                msgManager.sendUPC(UPC.LEAVE_ROOM, roomID);
+            }
+        });
 
     })(this.jQuery);
 

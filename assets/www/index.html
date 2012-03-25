@@ -27,9 +27,9 @@
 <body>
 <div data-role="page" id="login-page">
 	<div data-role="content">	
-		<img src="img/sg_logo.png" class="logo">
+		<img src="img/sg_logo.png" class="logo" alt="Sportti Galaksi">
 		<form id="frm" method="post" action="https://sportti.dreamschool.fi/galaxy/api/login" autocomplete="on">
-			<fieldset>
+		<fieldset>
 			<div class="form-row form-input-row">
 			  <p id="login-message" class="message"></p>
 			</div>
@@ -43,29 +43,27 @@
 			</div>
 			<div class="form-row form-button-row">
 			<button type="button" id="login" name="submit" data-theme="b" value="join">Kirjaudu</button>
-			</fieldset>
 			</div>
+		</fieldset>
 		</form>
 	</div>
 </div>
 
 <div data-role="page" id="app-page">
   <div data-theme="b" data-role="header">
-    <a data-role="button" data-direction="reverse" data-transition="flip" href="#login-page" data-icon="home" data-iconpos="left">Palaa</a>
+    <a data-role="button" data-transition="slidedown" href="#login-page" data-icon="home" data-iconpos="left">Palaa</a>
     <h3>Peliohjain</h3>
   </div>
 	<div data-role="content">	
-	<div>
-	<img src="img/sg_logo.png" class="logo">
-  </div>
-	<form>
-		<div class="form-row form-input-row">
+	  <div>
+	    <img src="img/sg_logo.png" class="logo" alt="Sportti Galaksi">
+    </div>
+	  <form>
 		  <div class="form-row form-button-row">
 			  <p id="app-message" class="message"></p>
 			</div>
 			<div class="form-row form-button-row">
 			  <button type="button" name="read" id="read" data-theme="b">Lue koodi</button>
-			</fieldset>
 			</div>
 		</form>
 	</div>
