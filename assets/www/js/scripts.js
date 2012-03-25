@@ -48,8 +48,9 @@ function onDeviceReady() {
                 }
 
 				if (data.toPage == "#login-page" || data.toPage == "file:///android_asset/www/index.html#login-page") {
-					console.log('EVENT pagebeforechange: login-page');
-	                User = {};
+					      console.log('EVENT pagebeforechange: login-page');
+	              User = {};
+	              orbiter.leave();
 		            orbiter.disconnect();
 		            roomID = 0;
 	            }
@@ -256,6 +257,8 @@ function onDeviceReady() {
         function leave() {
 
             User = {};
+            
+            orbiter.leave();
 
             orbiter.disconnect();
 
