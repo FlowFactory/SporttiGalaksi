@@ -15,7 +15,7 @@
 	<script src="js/init-settings.js"></script>
 	<script src="js/jquery.mobile-1.0.1.min.js"></script>
 
-	
+
 	<script src="js/phonegap-1.4.1.js"></script>
 	<!--<script src="js/cordova-1.5.0.js"></script>-->
 	<script src="js/barcodescanner.js"></script>
@@ -25,50 +25,45 @@
 
 </head>
 <body>
-<div data-role="page" id="login-page">
-	<div data-role="content">	
-		<img src="img/sg_logo.png" class="logo" alt="Sportti Galaksi">
-		<form id="frm" method="post" action="https://sportti.dreamschool.fi/galaxy/api/login" autocomplete="on">
-		<fieldset>
-			<div class="form-row form-input-row">
-			  <p id="login-message" class="message"></p>
-			</div>
-			<div class="form-row form-input-row">
-			<label for="username">K&auml;ytt&auml;j&auml;tunnus:</label>
-			<input type="text" name="username" id="username" />
-			</div>
-			<div class="form-row form-input-row">
-			<label for="passcode">Salasana:</label>
-			<input type="password" name="passcode" id="passcode" autocomplete="off" />
-			</div>
-			<div class="form-row form-button-row">
-			<button type="button" id="login" name="submit" data-theme="b" value="join">Kirjaudu</button>
-			</div>
-		</fieldset>
-		</form>
+	<div data-role="page" id="login-page">
+		<div data-role="content">	
+			<img src="img/sg_logo.png" class="logo" alt="Sportti Galaksi">
+			<form id="frm" method="post" action="https://sportti.dreamschool.fi/galaxy/api/login" autocomplete="on">
+				<fieldset>
+					<div class="form-row form-input-row">
+						<p id="login-message" class="message"></p>
+					</div>
+					<div class="form-row form-input-row">
+						<label for="username">K&auml;ytt&auml;j&auml;tunnus:</label>
+						<input type="text" name="username" id="username" />
+					</div>
+					<div class="form-row form-input-row">
+						<label for="passcode">Salasana:</label>
+						<input type="password" name="passcode" id="passcode" autocomplete="off" />
+					</div>
+					<div class="form-row form-button-row">
+						<button type="button" id="login" name="submit" data-theme="b" value="join">Kirjaudu</button>
+					</div>
+				</fieldset>
+			</form>
+		</div>
 	</div>
-</div>
-
-<div data-role="page" id="app-page">
-  <div data-theme="b" data-role="header">
-    <a data-role="button" data-transition="slidedown" href="#login-page" data-icon="home" data-iconpos="left">Palaa</a>
-    <h3>Peliohjain</h3>
-  </div>
-	<div data-role="content">	
-	  <div>
-	    <img src="img/sg_logo.png" class="logo" alt="Sportti Galaksi">
-    </div>
-	  <form>
-		  <div class="form-row form-button-row">
-			  <p id="app-message" class="message"></p>
-			</div>
-			<div class="form-row form-button-row">
-			  <button type="button" name="read" id="read" data-theme="b">Lue koodi</button>
-			</div>
-		</form>
+	<div data-role="page" id="app-page">
+		<div data-theme="b" data-role="header">
+			<a data-role="button" data-transition="slidedown" href="#login-page" data-icon="home" data-iconpos="left">Palaa</a>
+			<h3>Peliohjain</h3>
+		</div>
+		<div data-role="content">	
+			<img src="img/sg_logo.png" class="logo" alt="Sportti Galaksi">
+			<form>
+				<div class="form-row form-button-row">
+					<p id="app-message" class="message"></p>
+				</div>
+				<div class="form-row form-button-row">
+					<button type="button" name="read" id="read" data-theme="b">Lue koodi</button>
+				</div>
+			</form>
+		</div>
 	</div>
-</div>
-
-
 </body>
 </html>

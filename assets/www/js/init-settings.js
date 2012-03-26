@@ -1,6 +1,6 @@
 $(document).bind("mobileinit",
 function() {
-    $.mobile.defaultPageTransition = 'slideup';
+    $.mobile.defaultPageTransition = 'none';
     // i18n
     $.mobile.loadingMessage = false;
     // PhoneGap
