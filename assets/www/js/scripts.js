@@ -139,7 +139,7 @@ function onDeviceReady() {
                                 // send message to game
                                 msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", obj.roomId, "true", "", 'CLOSE');
                             } else {
-                                $('#app-message').text('Et voi sulkea pelihuonetta!').removeClass("success text").addClass("error");
+                                $('#app-message').text('Vain peliin liittynyt pelaaja voi sulkea pelin!').removeClass("success text").addClass("error");
                             }
                         }
                         // open
