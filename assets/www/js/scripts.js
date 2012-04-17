@@ -123,13 +123,13 @@ function onDeviceReady() {
                         // join
                         if (obj.action == "join") {
 
-                            var title = !!obj.title ? ': ' + obj.title: '.';
-
-                            $('#app-message').text('Liitytään peliin' + title).removeClass("error success").addClass("text");
+                            $('#app-message').text('Liitytään peliin.').removeClass("error success").addClass("text");
 
                             // union init
                             roomID = obj.roomId;
-                            init();
+							User.team_id = (typeof obj.tid !== "undefined") ? obj.tid : 0; // teamID
+							
+							init();
                         }
                         // leave
                         else if (obj.action == "close") {
@@ -137,7 +137,7 @@ function onDeviceReady() {
                             if ( !! roomID && roomID == obj.roomId) {
                                 $('#app-message').text('').removeClass("error success text");
                                 // send message to game
-                                msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", obj.roomId, "true", "", 'CLOSE');
+                                msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "GAME_MESSAGE", obj.roomId, null, 'CLOSE');
                             } else {
                                 $('#app-message').text('Vain peliin liittynyt pelaaja voi sulkea pelin!').removeClass("success text").addClass("error");
                             }
@@ -160,7 +160,7 @@ function onDeviceReady() {
 
                             if (typeof msgManager !== "undefined" && roomID == obj.roomId) {
                                 //
-                                msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", obj.roomId, "true", "", "START");
+                                msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "GAME_MESSAGE", obj.roomId, null, "START");
                             } else {
                                 // error if not joined first
                                 $('#app-message').text("Vain peliin liittyneet voivat aloittaa pelin!").removeClass("text success").addClass("error");
@@ -359,7 +359,7 @@ function onDeviceReady() {
             //
             $('#app-message').text('Avataan peliä...').removeClass("error text").addClass("success");
             //
-            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", lobbyID, "true", "", gameID);
+            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", lobbyID, "false", null, gameID);
             //
             setTimeout(clearMessage(), 3000);
         }
@@ -378,14 +378,13 @@ function onDeviceReady() {
         // Triggered when a JOINED_ROOM message is received
         function joinedRoomListener() {
             // set user´s information
-            var userinfo = User.user_id + ';' + User.username + ';' + User.nickname;
+            var userinfo = User.user_id + ';' + User.username + ';' + User.nickname + ";" + User.team_id;
             // console.log("ROOMID: "+roomID + ', USERID: ' + userinfo);
             // send user´s information
             msgManager.sendUPC(UPC.SET_CLIENT_ATTR, orbiter.getClientID(), "", "USERINFO", userinfo, roomID, "4");
 
             $('#app-message').text('Liityit peliin!').removeClass("error text").addClass("success");
         }
-
 
         //==============================================================================
         // ORBITER EVENT LISTENERS
@@ -445,24 +444,10 @@ function onDeviceReady() {
         }
 
         //==============================================================================
-        //  ROOM EVENT LISTENER
-        //==============================================================================
-        // Triggered when a JOINED_ROOM message is received
-        function joinedRoomListener() {
-            // set user´s information
-            var userinfo = User.user_id + ';' + User.username + ';' + User.nickname;
-            // console.log("ROOMID: "+roomID + ', USERID: ' + userinfo);
-            // send user´s information
-            msgManager.sendUPC(UPC.SET_CLIENT_ATTR, orbiter.getClientID(), "", "USERINFO", userinfo, roomID, "4");
-            //
-            $('#app-message').text('Liityit peliin!').removeClass("error text").addClass("success");
-        }
-
-        //==============================================================================
         // GAME STATE LISTENER
         //==============================================================================
         function stateListener(fromGame, stateMsg) {
-            //console.log("STATE LISTENER YO!");
+            console.log("STATE LISTENER");
             if (stateMsg == "play") {
                 gameState = "play";
                 startWatch();
@@ -531,14 +516,16 @@ function onDeviceReady() {
 
             if (max_pituus >= 20 && max_pituus > pituus) {
                 if (!in_air) {
-                    msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "jump;" + max_pituus);
-                    in_air = 1;
+                    msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "MOVE_MESSAGE", roomID, null, "jump;" + max_pituus);
+                    console.log('MOVE_MESSAGE _ JUMP ' + max_pituus)
+					in_air = 1;
                     setTimeout(reset_in_air, 500);
                 }
 
             }
             else if ((pituus < 18) && (pituus > 10)) {
-                msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "MOVE_MESSAGE", roomID, "true", "", "run;" + pituus);
+				console.log('MOVE_MESSAGE _ RUN ' + pituus)
+                msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "MOVE_MESSAGE", roomID, null, "run;" + pituus);
             }
             else {
                 oldx = ax;

@@ -9,27 +9,10 @@ input.ui-shadow-inset{color:#444;}
 label.error{color:red;}
 input.error{color:#B94A48;border-color:#EE5F5B;background-color:#F0DDDD;}
 #acc,#pituus{display:none;}
-
-#app-message {
-  margin: 0 2%;
-}
-
-.message {
-  color: orange;
-  text-align: center;
-  padding: 20px;
-  -webkit-border-radius: 6px; -moz-border-radius: 6px; border-radius: 6px;
-}
-.message.text, .message.error, .message.success {
-  background: rgba(0, 0, 0, .6);
-}
-.message.error {
-  color: orangeRed;
-}
-.message.success {
-  color: green;
-}
-
-#app-page .ui-content .ui-btn {
-  line-height: 3em;
-}
+#app-message{margin:0 2%;}
+.message{color:orange;text-align:center;padding:20px;-webkit-border-radius:6px;-moz-border-radius:6px;border-radius:6px;}
+.message.text,.message.error,.message.success{background:rgba(0,0,0,.6);}
+.message.error{color:orangeRed;}
+.message.success{color:green;}
+#app-page .ui-content .ui-btn{line-height:3em;}
+.ui-content{}
