@@ -27,8 +27,7 @@ package com.strumsoft;
 
 import android.os.Bundle;
 
-import org.apache.cordova.*;
-import com.phonegap.*;
+import com.phonegap.DroidGap;
 import com.strumsoft.websocket.phonegap.WebSocketFactory;
 
 /**
