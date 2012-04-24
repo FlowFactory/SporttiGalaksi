@@ -16,6 +16,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
+import org.apache.cordova.*;
+
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 

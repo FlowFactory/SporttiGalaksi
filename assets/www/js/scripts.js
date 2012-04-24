@@ -309,12 +309,13 @@ function onDeviceReady() {
             // Register for incoming messages from Union
             msgManager = orbiter.getMessageManager();
 
-            //orbiter.disableHTTPFailover();
+            orbiter.disableHTTPFailover();
             // Connect to Union
             orbiter.connect("socket.dreamschool.fi", 443);
         }
 
         function initLobby() {
+            console.log('SOCKET: initLobby');
             // Create Orbiter object
             orbiter = new net.user1.orbiter.Orbiter();
             // Register for connection events
@@ -323,7 +324,7 @@ function onDeviceReady() {
             // Register for incoming messages from Union
             msgManager = orbiter.getMessageManager();
             //
-            //orbiter.disableHTTPFailover();
+            orbiter.disableHTTPFailover();
             // Connect to Union
             orbiter.connect("socket.dreamschool.fi", 443);
         }
@@ -346,6 +347,9 @@ function onDeviceReady() {
 
         // Triggered when the user has joined the room
         function joinLobbyResultListener(roomID, status) {
+
+            console.log('SOCKET: joinLobbyResultListener ' + status);
+
             var err = 0,
             msg = "";
 
@@ -412,6 +416,7 @@ function onDeviceReady() {
         //==============================================================================
         // Triggered when the connection is ready
         function readyListener(e) {
+            console.log('SOCKET: readyListener');
             //
             $('#app-message').text('').removeClass("error success text");
             //
@@ -609,6 +614,28 @@ function onDeviceReady() {
                 msgManager.sendUPC(UPC.LEAVE_ROOM, roomID);
             }
         });
+
+/*
+        // new socket
+        var socket = new WebSocket('ws://socket.dreamschool.fi:80');
+
+        console.log(JSON.stringify(socket));
+
+        // push a message after the connection is established.
+        socket.onopen = function() {
+         socket.send('{ "type": "join", "game_id": "game/6"}');
+        };
+
+        // alerts message pushed from server
+        socket.onmessage = function(msg) {
+         alert(JSON.stringify(msg.data));
+        };
+
+        // alert close event
+        socket.onclose = function() {
+         alert('closed');
+        };
+*/
 
     })(this.jQuery);
 
