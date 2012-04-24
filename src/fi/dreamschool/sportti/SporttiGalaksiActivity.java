@@ -1,9 +1,10 @@
 package fi.dreamschool.sportti;
 
 import android.content.Intent;
+import android.app.Activity;
 import android.os.Bundle;
-import com.phonegap.DroidGap;
-import com.strumsoft.websocket.phonegap.*;
+import org.apache.cordova.*;
+import com.strumsoft.*;
 
 public class SporttiGalaksiActivity extends DroidGap {
 	/** Called when the activity is first created. */
@@ -18,6 +19,6 @@ public class SporttiGalaksiActivity extends DroidGap {
 		this.startService(serviceIntent);
 
 		// attach websocket factory
-		appView.addJavascriptInterface(new WebSocketFactory(appView), "WebSocketFactory");
+		// appView.addJavascriptInterface(new WebSocketFactory(appView), "WebSocketFactory");
 	}
 }

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    android:windowSoftInputMode="adjustPan"
     package="fi.dreamschool.sportti"
-    android:versionCode="16"
-    android:versionName="2.7.6">
+    android:versionCode="17"
+    android:versionName="2.8">
 
     <supports-screens
     	android:largeScreens="true"
@@ -52,7 +53,7 @@
         	android:configChanges="orientation|keyboardHidden">
           <intent-filter></intent-filter>
         </activity>
-        
+
         <activity 
         	android:name="com.google.zxing.client.android.CaptureActivity" 
         	android:screenOrientation="landscape" 

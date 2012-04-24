@@ -37,9 +37,10 @@ public final class R {
     }
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
-        public static final int launcher_icon=0x7f020001;
-        public static final int share_via_barcode=0x7f020002;
-        public static final int shopper_icon=0x7f020003;
+        public static final int icon=0x7f020001;
+        public static final int launcher_icon=0x7f020002;
+        public static final int share_via_barcode=0x7f020003;
+        public static final int shopper_icon=0x7f020004;
     }
     public static final class id {
         /**  Messages IDs 
@@ -143,7 +144,6 @@ public final class R {
         public static final int contents_phone=0x7f080022;
         public static final int contents_sms=0x7f080023;
         public static final int contents_text=0x7f080024;
-        public static final int hello=0x7f08007c;
         public static final int history_clear_text=0x7f080025;
         public static final int history_email_title=0x7f080026;
         public static final int history_send=0x7f080027;
@@ -233,7 +233,7 @@ public final class R {
         public static final int zxing_url=0x7f08007b;
     }
     public static final class xml {
-        public static final int phonegap=0x7f040000;
+        public static final int cordova=0x7f040000;
         public static final int plugins=0x7f040001;
         public static final int preferences=0x7f040002;
     }
