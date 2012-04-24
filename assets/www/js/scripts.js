@@ -3,6 +3,27 @@
 // Wait for PhoneGap to load
 document.addEventListener("deviceready", onDeviceReady, false);
 
+
+/*
+ * QR CODE DOCUMENTATION 
+ *
+ * obj = json encoded string read from qr code and parsed to js object
+ *
+ * obj.a = ACTION
+ * values:
+ *  - o = open
+ *  - s = start
+ *  - j = join
+ *  - c = close
+ *
+ * ID values
+ *
+ * obj.rid = roomID
+ * obj.tid = teamID
+ * obj.gid = gameID
+ *
+ */
+
 // PhoneGap is ready
 function onDeviceReady() {
 
@@ -121,46 +142,46 @@ function onDeviceReady() {
                         console.log(result.text);
 
                         // join
-                        if (obj.action == "join") {
+                        if (obj.a == "j") { // join
 
                             $('#app-message').text('Liitytään peliin.').removeClass("error success").addClass("text");
 
                             // union init
-                            roomID = obj.roomId;
+                            roomID = obj.rid;
 							User.team_id = (typeof obj.tid !== "undefined") ? obj.tid : 0; // teamID
 							
 							init();
                         }
                         // leave
-                        else if (obj.action == "close") {
+                        else if (obj.a == "c") { // close
 
-                            if ( !! roomID && roomID == obj.roomId) {
+                            if ( !! roomID && roomID == obj.rid) {
                                 $('#app-message').text('').removeClass("error success text");
                                 // send message to game
-                                msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "GAME_MESSAGE", obj.roomId, null, 'CLOSE');
+                                msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "GAME_MESSAGE", obj.rid, null, 'c');
                             } else {
                                 $('#app-message').text('Vain peliin liittynyt pelaaja voi sulkea pelin!').removeClass("success text").addClass("error");
                             }
                         }
                         // open
-                        else if (obj.action == "open") {
+                        else if (obj.a == "o") { // open
 
                             $('#app-message').text('Avataan peliä.').addClass("text").removeClass("error success");
 
-                            lobbyID = obj.roomId;
-                            gameID = obj.gameId;
+                            lobbyID = obj.rid; // roomID
+                            gameID = obj.gid; // gameID
 
                             initLobby();
 
                         }
                         // start game
-                        else if (obj.action == "start") {
+                        else if (obj.a == "s") { // start
 
                             $('#app-message').text('').removeClass("text error success");
 
-                            if (typeof msgManager !== "undefined" && roomID == obj.roomId) {
+                            if (typeof msgManager !== "undefined" && roomID == obj.rid) {
                                 //
-                                msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "GAME_MESSAGE", obj.roomId, null, "START");
+                                msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "GAME_MESSAGE", obj.rid, null, "s");
                             } else {
                                 // error if not joined first
                                 $('#app-message').text("Vain peliin liittyneet voivat aloittaa pelin!").removeClass("text success").addClass("error");
