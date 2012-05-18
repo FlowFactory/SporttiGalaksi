@@ -174,7 +174,6 @@ function onDeviceReady() {
 							User.lobby = true;
 
 							init();
-                            // initLobby();
 
                         }
                         // start game
