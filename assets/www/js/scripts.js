@@ -323,117 +323,27 @@ function onDeviceReady() {
             orbiter.connect("socket.dreamschool.fi", 443);
         }
 
-/*
-        function initLobby() {
-            // Create Orbiter object
-            orbiter = new net.user1.orbiter.Orbiter();
-            // Register for connection events
-            orbiter.addEventListener(net.user1.orbiter.OrbiterEvent.READY, readyLobbyListener, this);
-            orbiter.addEventListener(net.user1.orbiter.OrbiterEvent.CLOSE, closeLobbyListener, this);
-            // Register for incoming messages from Union
-            msgManager = orbiter.getMessageManager();
-            //
-
-			// if (orbiter.system.hasWebSocket()) {
-			//   alert('orbiter.system.hasWebSocket() supported');
-			// }
-            // orbiter.disableHTTPFailover();
-            // Connect to Union
-            orbiter.connect("socket.dreamschool.fi", 443);
-        }
-*/
-
-/*
-        // Triggered when the connection is ready
-        function readyLobbyListener(e) {
-            //
-            $('#app-message').text('Avataan peliä..').addClass("text").removeClass("error success");
-            //
-            UPC = net.user1.orbiter.UPC;
-            // listeners
-            msgManager.addMessageListener(UPC.JOINED_ROOM, joinedLobbyListener, this);
-            //msgManager.addMessageListener("STATE_MESSAGE", stateListener, this, [roomID]);
-            msgManager.addMessageListener(UPC.JOIN_ROOM_RESULT, joinLobbyResultListener, this);
-            //
-            clientID = orbiter.getClientID();
-            // Join the game room
-            msgManager.sendUPC(UPC.JOIN_ROOM, lobbyID);
-        }
-*/
-
-/*
-        // Triggered when the user has joined the room
-        function joinLobbyResultListener(roomID, status) {
-            var err = 0,
-            msg = "";
-
-            switch (status)
-            {
-            case "ROOM_NOT_FOUND":
-                msg = "Pelihuonetta ei löytynyt!";
-                err = 1;
-                break;
-            case "ERROR":
-                msg = "Palvelimella tapahtui virhe!";
-                err = 1;
-                break;
-            case "ROOM_FULL":
-                msg = "Pelihuone on täynnä!";
-                err = 1;
-                break;
-            case "ALREADY_IN_ROOM":
-                msg = "Olet jo pelihuoneessa!";
-                err = 1;
-                break;
-            }
-
-            if (err) {
-                $('#app-message').text(msg).addClass("error").removeClass("text success");
-            }
-
-            return;
-        }
-*/
-/*
-        function joinedLobbyListener() {
-            //
-            $('#app-message').text('Avataan peliä...').removeClass("error text").addClass("success");
-            //
-            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", lobbyID, "false", null, gameID);
-            //
-            setTimeout(clearMessage(), 3000);
-        }
-*/
-
-        function clearMessage() {
+		function clearMessage() {
             $('#app-message').text('').removeClass("error text success");
         }
-
-/*
-        function closeLobbyListener(e) {
-            $('#app-message').text('').removeClass("text success error");
-        }
-*/
 
         //==============================================================================
         //  ROOM EVENT LISTENER
         //==============================================================================
         // Triggered when a JOINED_ROOM message is received
         function joinedRoomListener() {
-	
 			if(User.lobby) {
-					console.log('JOINED ROOM LISTENER : LOBBY TRUE')
-					console.log('ROOMID ' + roomID + ' GAMEID ' + gameID)
+				console.log('ROOMID ' + roomID + ' GAMEID ' + gameID);
 				//
 	            $('#app-message').text('Avataan peliä...').removeClass("error text").addClass("success");
 	            //
-	            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", roomID, "false", null, gameID);
+				msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "GAME_MESSAGE", roomID, "false", null, gameID);
 	            //
 	            setTimeout(clearMessage(), 3000);
 				//
 				User.lobby = false;
 			} else {
-				console.log('JOINED ROOM LISTENER : LOBBY FALSE')
+				console.log('JOINED ROOM LISTENER : LOBBY FALSE');
 	            // set user´s information
 	            var userinfo = User.user_id + ';' + User.username + ';' + User.nickname + ";" + User.team_id;
 	            // send user´s information
@@ -441,7 +351,6 @@ function onDeviceReady() {
 				// 
 	            $('#app-message').text('Liityit peliin!').removeClass("error text").addClass("success");
 			}
-
         }
 
         //==============================================================================
@@ -505,7 +414,6 @@ function onDeviceReady() {
         // GAME STATE LISTENER
         //==============================================================================
         function stateListener(fromGame, stateMsg) {
-            console.log("STATE LISTENER");
             if (stateMsg == "play") {
                 gameState = "play";
                 startWatch();
@@ -575,14 +483,14 @@ function onDeviceReady() {
             if (max_pituus >= 20 && max_pituus > pituus) {
                 if (!in_air) {
                     msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "MOVE_MESSAGE", roomID, null, "jump;" + max_pituus);
-                    console.log('MOVE_MESSAGE _ JUMP ' + max_pituus)
+                    // console.log('MOVE_MESSAGE _ JUMP ' + max_pituus)
 					in_air = 1;
                     setTimeout(reset_in_air, 500);
                 }
 
             }
             else if ((pituus < 18) && (pituus > 10)) {
-				console.log('MOVE_MESSAGE _ RUN ' + pituus)
+				// console.log('MOVE_MESSAGE _ RUN ' + pituus)
                 msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "MOVE_MESSAGE", roomID, null, "run;" + pituus);
             }
             else {
@@ -626,7 +534,7 @@ function onDeviceReady() {
             states[Connection.NONE] = 'No network connection';
 
             if (states[networkState] != state) {
-                console.log('Connection state changed to: ' + states[networkState]);
+                // console.log('Connection state changed to: ' + states[networkState]);
                 state = states[networkState];
             }
         }
