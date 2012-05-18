@@ -3,7 +3,7 @@ package fi.dreamschool.sportti;
 import android.content.Intent;
 import android.os.Bundle;
 import com.phonegap.DroidGap;
-import com.strumsoft.websocket.phonegap.*;
+import com.strumsoft.websocket.phonegap.WebSocketFactory;
 
 public class SporttiGalaksiActivity extends DroidGap {
 	/** Called when the activity is first created. */

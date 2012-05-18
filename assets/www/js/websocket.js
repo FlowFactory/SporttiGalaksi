@@ -54,6 +54,8 @@
 	}
 	
 	WebSocket.onclose = function (evt) {
+		console.log("WebSocket.onclose = function (evt)");
+		console.log(evt)
 		WebSocket.store[evt._target]['onclose'].call(global, evt);
 	}
 	
@@ -75,21 +77,21 @@
 	}
 	///////////// Must be overloaded
 	WebSocket.prototype.onopen = function(){
-		throw new Error('onopen not implemented.');
+		console.log('onopen not implemented.');
     };
     
     // alerts message pushed from server
     WebSocket.prototype.onmessage = function(msg){
-    	throw new Error('onmessage not implemented.');
+    	console.log('onmessage not implemented.');
     };
     
     // alerts message pushed from server
     WebSocket.prototype.onerror = function(msg){
-    	throw new Error('onerror not implemented.');
+    	console.log('onerror not implemented.');
     };
     
     // alert close event
     WebSocket.prototype.onclose = function(){
-        throw new Error('onclose not implemented.');
+        console.log('onclose not implemented.');
     };
 })();

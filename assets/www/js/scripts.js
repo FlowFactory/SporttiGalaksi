@@ -34,6 +34,7 @@ function onDeviceReady() {
         //==============================================================================
         // user object for user vars
         var User = {};
+		User.lobby = false;
 
         // union vars
         var orbiter;
@@ -46,7 +47,7 @@ function onDeviceReady() {
         var player;
         var gameState;
 
-        var lobbyID;
+        // var lobbyID;
         var gameID;
 
         // acceleration vars
@@ -69,7 +70,6 @@ function onDeviceReady() {
                 }
 
                 if (data.toPage == "#login-page" || data.toPage == "file:///android_asset/www/index.html#login-page") {
-                    console.log('EVENT pagebeforechange: login-page');
                     User = {};
 
                     if (typeof msgManager !== "undefined") {
@@ -150,7 +150,7 @@ function onDeviceReady() {
                             roomID = obj.rid;
 							User.team_id = (typeof obj.tid !== "undefined") ? obj.tid : 0; // teamID
 							
-							init();
+							// init();
                         }
                         // leave
                         else if (obj.a == "c") { // close
@@ -168,10 +168,13 @@ function onDeviceReady() {
 
                             $('#app-message').text('Avataan peliä.').addClass("text").removeClass("error success");
 
-                            lobbyID = obj.rid; // roomID
+                            roomID = obj.rid; // roomID
                             gameID = obj.gid; // gameID
 
-                            initLobby();
+							User.lobby = true;
+
+							init();
+                            // initLobby();
 
                         }
                         // start game
@@ -309,11 +312,18 @@ function onDeviceReady() {
             // Register for incoming messages from Union
             msgManager = orbiter.getMessageManager();
 
-            //orbiter.disableHTTPFailover();
+            //
+            if (typeof WebSocket === "undefined") {
+                console.log("SOCKET: NO SOCKET SUPPORT")
+            } else {
+				orbiter.disableHTTPFailover();
+			}
+
             // Connect to Union
             orbiter.connect("socket.dreamschool.fi", 443);
         }
 
+/*
         function initLobby() {
             // Create Orbiter object
             orbiter = new net.user1.orbiter.Orbiter();
@@ -323,11 +333,17 @@ function onDeviceReady() {
             // Register for incoming messages from Union
             msgManager = orbiter.getMessageManager();
             //
-            //orbiter.disableHTTPFailover();
+
+			// if (orbiter.system.hasWebSocket()) {
+			//   alert('orbiter.system.hasWebSocket() supported');
+			// }
+            // orbiter.disableHTTPFailover();
             // Connect to Union
             orbiter.connect("socket.dreamschool.fi", 443);
         }
+*/
 
+/*
         // Triggered when the connection is ready
         function readyLobbyListener(e) {
             //
@@ -343,7 +359,9 @@ function onDeviceReady() {
             // Join the game room
             msgManager.sendUPC(UPC.JOIN_ROOM, lobbyID);
         }
+*/
 
+/*
         // Triggered when the user has joined the room
         function joinLobbyResultListener(roomID, status) {
             var err = 0,
@@ -375,7 +393,8 @@ function onDeviceReady() {
 
             return;
         }
-
+*/
+/*
         function joinedLobbyListener() {
             //
             $('#app-message').text('Avataan peliä...').removeClass("error text").addClass("success");
@@ -384,27 +403,45 @@ function onDeviceReady() {
             //
             setTimeout(clearMessage(), 3000);
         }
+*/
 
         function clearMessage() {
             $('#app-message').text('').removeClass("error text success");
         }
 
+/*
         function closeLobbyListener(e) {
             $('#app-message').text('').removeClass("text success error");
         }
+*/
 
         //==============================================================================
         //  ROOM EVENT LISTENER
         //==============================================================================
         // Triggered when a JOINED_ROOM message is received
         function joinedRoomListener() {
-            // set user´s information
-            var userinfo = User.user_id + ';' + User.username + ';' + User.nickname + ";" + User.team_id;
-            // console.log("ROOMID: "+roomID + ', USERID: ' + userinfo);
-            // send user´s information
-            msgManager.sendUPC(UPC.SET_CLIENT_ATTR, orbiter.getClientID(), "", "USERINFO", userinfo, roomID, "4");
+	
+			if(User.lobby) {
+					console.log('JOINED ROOM LISTENER : LOBBY TRUE')
+					console.log('ROOMID ' + roomID + ' GAMEID ' + gameID)
+				//
+	            $('#app-message').text('Avataan peliä...').removeClass("error text").addClass("success");
+	            //
+	            msgManager.sendUPC(UPC.SEND_MESSAGE_TO_ROOMS, "GAME_MESSAGE", roomID, "false", null, gameID);
+	            //
+	            setTimeout(clearMessage(), 3000);
+				//
+				User.lobby = false;
+			} else {
+				console.log('JOINED ROOM LISTENER : LOBBY FALSE')
+	            // set user´s information
+	            var userinfo = User.user_id + ';' + User.username + ';' + User.nickname + ";" + User.team_id;
+	            // send user´s information
+	            msgManager.sendUPC(UPC.SET_CLIENT_ATTR, orbiter.getClientID(), "", "USERINFO", userinfo, roomID, "4");
+				// 
+	            $('#app-message').text('Liityit peliin!').removeClass("error text").addClass("success");
+			}
 
-            $('#app-message').text('Liityit peliin!').removeClass("error text").addClass("success");
         }
 
         //==============================================================================
@@ -609,6 +646,31 @@ function onDeviceReady() {
                 msgManager.sendUPC(UPC.LEAVE_ROOM, roomID);
             }
         });
+
+
+		
+		
+
+
+    // new socket
+/*
+    var socket = new WebSocket('ws://193.167.91.4:8080');
+     
+    // push a message after the connection is established.
+    socket.onopen = function() {
+     socket.send('{ "type": "join", "game_id": "game/6"}')
+    };
+
+    // alerts message pushed from server
+    socket.onmessage = function(msg) {
+     alert(JSON.stringify(msg.data));
+    };
+
+    // alert close event
+    socket.onclose = function() {
+     alert('closed');
+    };
+*/
 
     })(this.jQuery);
 
