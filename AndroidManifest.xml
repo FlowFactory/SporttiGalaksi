@@ -40,9 +40,9 @@
         </activity>
 
         <service 
-        	android:name=".SporttiGalaksiWifi">
+        	android:name=".SporttiGalaksiWifiService">
         	<intent-filter>
-        		<action android:name="fi.dreamschool.sportti.SporttiGalaksiWifi" />
+        		<action android:name="fi.dreamschool.sportti.SporttiGalaksiWifiService" />
         	</intent-filter>
         </service>
 
