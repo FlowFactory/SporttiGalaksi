@@ -22,6 +22,7 @@ import com.phonegap.api.PluginResult;
 /**
  * This calls out to the ZXing barcode reader and returns the result.
  */
+@SuppressWarnings("unused")
 public class BarcodeScanner extends Plugin {
     private static final String TEXT_TYPE = "TEXT_TYPE";
     private static final String EMAIL_TYPE = "EMAIL_TYPE";

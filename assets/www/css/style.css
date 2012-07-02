@@ -1,6 +1,6 @@
 /* hikiboksi ohjain */
 html,body{background:#000;}
-.ui-page{background:#000 url(../img/space_bg.jpg) 0 0 repeat;background-size:cover;margin-bottom:0;padding-bottom:0;}
+.ui-page{background:#000 url(../img/bg-portrait.png) 0 0 repeat;background-size:cover;margin-bottom:0;padding-bottom:0;}
 .logo{width:100%;margin-bottom:0;}
 .form-input-row{margin:0 auto .5em;width:90%;}
 .form-button-row{margin:1.5em auto;width:90%;-moz-user-select:none;-webkit-user-select:none;-o-user-select:none;user-select:none;}
