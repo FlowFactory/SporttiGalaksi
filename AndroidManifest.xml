@@ -38,14 +38,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+		<!--
         <service 
         	android:name=".SporttiGalaksiWifiService">
         	<intent-filter>
         		<action android:name="fi.dreamschool.sportti.SporttiGalaksiWifiService" />
         	</intent-filter>
         </service>
-
+		-->
         <activity 
         	android:name="com.phonegap.DroidGap" 
         	android:label="@string/app_name" 

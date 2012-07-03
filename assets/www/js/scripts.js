@@ -26,7 +26,6 @@ document.addEventListener("deviceready", onDeviceReady, false);
 
 // PhoneGap is ready
 
-
 function onDeviceReady() {
 
     (function($) {
@@ -271,7 +270,6 @@ function onDeviceReady() {
         // LEAVE FUNCTION
         //==============================================================================
 
-
         function leave() {
 
             User = {};
@@ -431,8 +429,6 @@ function onDeviceReady() {
         }
 
         // Stop watching the acceleration
-
-
         function stopWatch() {
             if (watchID) {
                 navigator.accelerometer.clearWatch(watchID);
@@ -442,13 +438,13 @@ function onDeviceReady() {
 
         // onSuccess: Get a snapshot of the current acceleration
         function onSuccess(acceleration) {
+            //console.log('onSuccess acceleration' + acceleration.x + ' ' + acceleration.y + ' ' + acceleration.y);
             activateClient(acceleration.x, acceleration.y, acceleration.z);
         }
 
         // onError: Failed to get the acceleration
-
-
         function onError() {
+            //console.log('onError acceleration');
             $('#app-message').text('Kiihtyvyysanturin käyttäminen ei onnistunut!').addClass("error").removeClass("text success");
         }
 
@@ -471,6 +467,8 @@ function onDeviceReady() {
             var pituus = Math.abs(Math.sqrt(sum));
 
             pituus = Math.round(pituus);
+
+            //console.log('pituus' + pituus);
 
             // if new value > old max value
             if (pituus > max_pituus) {
@@ -532,6 +530,8 @@ function onDeviceReady() {
                 // console.log('Connection state changed to: ' + states[networkState]);
                 state = states[networkState];
             }
+
+            // console.log('Connection state: ' + states[networkState]);
         }
 
         // setInterval(check_network, 4000);
