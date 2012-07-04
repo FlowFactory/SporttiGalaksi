@@ -1,8 +1,7 @@
 package fi.dreamschool.sportti;
 
-import android.content.Intent;
 import android.os.Bundle;
-import com.phonegap.DroidGap;
+import org.apache.cordova.DroidGap;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.PowerManager;
@@ -17,9 +16,6 @@ public class SporttiGalaksiActivity extends DroidGap {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		Intent intent = new Intent(".SporttiGalaksiWifiService");
-		this.startService(intent);
 
 	 	super.loadUrl("file:///android_asset/www/index.html");
 

@@ -16,18 +16,22 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 
-import com.phonegap.api.Plugin;
-import com.phonegap.api.PluginResult;
+import org.apache.cordova.api.Plugin;
+import org.apache.cordova.api.PluginResult;
 
 /**
  * This calls out to the ZXing barcode reader and returns the result.
  */
 @SuppressWarnings("unused")
 public class BarcodeScanner extends Plugin {
-    private static final String TEXT_TYPE = "TEXT_TYPE";
-    private static final String EMAIL_TYPE = "EMAIL_TYPE";
-    private static final String PHONE_TYPE = "PHONE_TYPE";
-    private static final String SMS_TYPE = "SMS_TYPE";
+
+	private static final String TEXT_TYPE = "TEXT_TYPE";
+
+	private static final String EMAIL_TYPE = "EMAIL_TYPE";
+
+	private static final String PHONE_TYPE = "PHONE_TYPE";
+
+	private static final String SMS_TYPE = "SMS_TYPE";
 
     public static final int REQUEST_CODE = 0x0ba7c0de;
 
@@ -103,7 +107,6 @@ public class BarcodeScanner extends Plugin {
         if (requestCode == REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 JSONObject obj = new JSONObject();
-                
                 try {
                     obj.put("text", intent.getStringExtra("SCAN_RESULT"));
                     obj.put("format", intent.getStringExtra("SCAN_RESULT_FORMAT"));
@@ -111,7 +114,6 @@ public class BarcodeScanner extends Plugin {
                 } catch(JSONException e) {
                     //Log.d(LOG_TAG, "This should never happen");
                 }
-
                 this.success(new PluginResult(PluginResult.Status.OK, obj), this.callback);
             } if (resultCode == Activity.RESULT_CANCELED) {
                 JSONObject obj = new JSONObject();
@@ -134,11 +136,13 @@ public class BarcodeScanner extends Plugin {
      * @param data  The data to encode in the bar code
      * @param data2 
      */
+    
     public void encode(String type, String data) {
         Intent intentEncode = new Intent("com.phonegap.plugins.barcodescanner.ENCODE");
         intentEncode.putExtra("ENCODE_TYPE", type);
         intentEncode.putExtra("ENCODE_DATA", data);
-        
-        this.ctx.startActivity(intentEncode);
+
+        this.ctx.startActivityForResult((Plugin) this, intentEncode, REQUEST_CODE);
     }
+    
 }

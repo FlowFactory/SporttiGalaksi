@@ -1,5 +1,5 @@
 /**
- * PhoneGap is available under *either* the terms of the modified BSD license *or* the
+ * cordova is available under *either* the terms of the modified BSD license *or* the
  * MIT License (2008). See http://opensource.org/licenses/alphabetical for full text.
  *
  * Copyright (c) Matt Kane 2010
@@ -15,7 +15,6 @@ BarcodeScanner.Encode = {
         EMAIL_TYPE: "EMAIL_TYPE",
         PHONE_TYPE: "PHONE_TYPE",
         SMS_TYPE: "SMS_TYPE",
-		INVALID_TYPE: "INVALID_TYPE",
         //  CONTACT_TYPE: "CONTACT_TYPE",  // TODO:  not implemented, requires passing a Bundle class from Javascriopt to Java
         //  LOCATION_TYPE: "LOCATION_TYPE" // TODO:  not implemented, requires passing a Bundle class from Javascriopt to Java
 };
@@ -34,7 +33,7 @@ BarcodeScanner.prototype.scan = function(successCallback, errorCallback) {
         return
     }
 
-    PhoneGap.exec(successCallback, errorCallback, 'BarcodeScanner', 'scan', []);
+    cordova.exec(successCallback, errorCallback, 'BarcodeScanner', 'scan', []);
 };
 
 //-------------------------------------------------------------------
@@ -51,10 +50,10 @@ BarcodeScanner.prototype.encode = function(type, data, successCallback, errorCal
         return
     }
 
-    PhoneGap.exec(successCallback, errorCallback, 'BarcodeScanner', 'encode', [{"type": type, "data": data, "options": options}]);
+    cordova.exec(successCallback, errorCallback, 'BarcodeScanner', 'encode', [{"type": type, "data": data, "options": options}]);
 };
 
 //-------------------------------------------------------------------
-PhoneGap.addConstructor(function() {
-    PhoneGap.addPlugin('barcodeScanner', new BarcodeScanner());
+cordova.addConstructor(function() {
+    cordova.addPlugin('barcodeScanner', new BarcodeScanner());
 });
