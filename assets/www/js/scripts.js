@@ -143,18 +143,24 @@ function onDeviceReady() {
                             // union init
                             roomID = obj.roomId;
                             User.team_id = (typeof obj.tid !== "undefined") ? obj.tid : 0; // teamID
-                            
                             init();
                         }
                         // leave
                         else if (obj.action == "close") { // close
+
+                            // if not connected then make a new connection to union
+                            if(typeof msgManager === "undefined") {
+                                roomID = obj.roomId;
+                                init();
+                            }
+
                             if ( !! roomID && roomID == obj.roomId) {
                                 $('#app-message').text('').removeClass("error success text");
                                 // send message to game
                                 msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "GAME_MESSAGE", obj.roomId, null, "CLOSE");
-                                //msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "GAME_MESSAGE", obj.roomId, "false", "close"); // null,
                             } else {
-                                $('#app-message').text('Vain peliin liittynyt pelaaja voi sulkea pelin!').removeClass("success text").addClass("error");
+                                //
+                                $('#app-message').text('Virhe! Et voinut sulkea peliä.').removeClass("success text").addClass("error");
                             }
                         }
                         // open
@@ -172,13 +178,18 @@ function onDeviceReady() {
                         else if (obj.action == "start") { // start
                             $('#app-message').text('').removeClass("text error success");
 
+                            // if not connected then make a new connection to union
+                            if (typeof msgManager === "undefined") {
+                                roomID = obj.roomId;
+                                init();
+                            }
+
                             if (typeof msgManager !== "undefined" && roomID == obj.roomId) {
                                 //
                                 msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "GAME_MESSAGE", obj.roomId, null, "START");
-                                //msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "GAME_MESSAGE", obj.roomId, "false", "start"); // null,
                             } else {
-                                // error if not joined first
-                                $('#app-message').text("Vain peliin liittyneet voivat aloittaa pelin!").removeClass("text success").addClass("error");
+                                //
+                                $('#app-message').text("Virhe! Et voinut aloittaa peliä.").removeClass("text success").addClass("error");
                             }
 
                         } else {
@@ -196,7 +207,6 @@ function onDeviceReady() {
         // LOGIN FUNCTION
         //==============================================================================
 
-
         function login($url, $form) {
 
             $.ajax({
@@ -205,22 +215,14 @@ function onDeviceReady() {
                 data: $form.serialize(),
                 dataType: 'xml',
                 cache: false,
-                //  timeout: 5000,
                 beforeSend: function() {
                     $('#login-message').text('Kirjaudutaan galaksiin...').removeClass("error success").addClass("text");
-                },
-                error: function() {
-                    $('#login-message').text('Verkkovirhe kirjauduttaessa peliin').addClass("error").removeClass("success text");
-                    $('#login-message').bind('tap', function(event) {
-                        $(this).text('').removeClass("error");
-                        $('input[type="text"], input[type="password"]').removeClass('error');
-                    });
                 },
                 success: function(data) {
                     // xml data var
                     var $xml = $(data);
 
-                    if ($xml.text() === 0) {
+                    if ($xml.text() === '0') {
                         // 0 as xml value means that auth went wrong
                         $('#login-message').text('Käyttäjätunnus tai salasana oli virheellinen!').removeClass("text success").addClass("error");
                         $('#login-message').bind('tap', function(event) {
@@ -259,6 +261,13 @@ function onDeviceReady() {
                         });
 
                     }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    $('#login-message').text('Verkkovirhe kirjauduttaessa peliin').addClass("error").removeClass("success text");
+                    $('#login-message').bind('tap', function(event) {
+                        $(this).text('').removeClass("error");
+                        $('input[type="text"], input[type="password"]').removeClass('error');
+                    });
                 }
             });
 
@@ -345,6 +354,8 @@ function onDeviceReady() {
         // ORBITER EVENT LISTENERS
         //==============================================================================
         // Triggered when the connection is ready
+
+
         function readyListener(e) {
             //
             $('#app-message').text('').removeClass("error success text");
@@ -361,13 +372,14 @@ function onDeviceReady() {
         }
 
         // Triggered when the connection is closed
+
+
         function closeListener(e) {
             // TODO tarkempi syy miksi katkesi > kuten joinissa
             $('#app-message').text('Poistuit pelihuoneesta!').addClass("error").removeClass("text success");
         }
 
         // Triggered when the user has joined the room
-
 
         function joinRoomResultListener(roomID, status) {
             var err = 0,
@@ -403,7 +415,6 @@ function onDeviceReady() {
         // GAME STATE LISTENER
         //==============================================================================
 
-
         function stateListener(fromGame, stateMsg) {
             if (stateMsg == "play") {
                 gameState = "play";
@@ -417,8 +428,9 @@ function onDeviceReady() {
         //==============================================================================
         // ACCELERATION STUFF
         //==============================================================================
-
         // Start watching the acceleration
+
+
         function startWatch() {
             // Update acceleration
             var options = {
@@ -428,6 +440,8 @@ function onDeviceReady() {
         }
 
         // Stop watching the acceleration
+
+
         function stopWatch() {
             if (watchID) {
                 navigator.accelerometer.clearWatch(watchID);
@@ -436,12 +450,16 @@ function onDeviceReady() {
         }
 
         // onSuccess: Get a snapshot of the current acceleration
+
+
         function onSuccess(acceleration) {
             //console.log('onSuccess acceleration' + acceleration.x + ' ' + acceleration.y + ' ' + acceleration.y);
             activateClient(acceleration.x, acceleration.y, acceleration.z);
         }
 
         // onError: Failed to get the acceleration
+
+
         function onError() {
             //console.log('onError acceleration');
             $('#app-message').text('Kiihtyvyysanturin käyttäminen ei onnistunut!').addClass("error").removeClass("text success");
@@ -468,7 +486,6 @@ function onDeviceReady() {
             pituus = Math.round(pituus);
 
             //console.log('pituus' + pituus);
-
             // if new value > old max value
             if (pituus > max_pituus) {
                 max_pituus = pituus;
