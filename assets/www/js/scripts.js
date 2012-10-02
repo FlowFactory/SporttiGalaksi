@@ -135,7 +135,7 @@ function onDeviceReady() {
                         // json string invalid
                         $('#app-message').text('Koodi oli virheellinen!').addClass("error").removeClass("text success");
                     } else {
-                        console.log(result.text);
+                     //   console.log(result.text);
                         // join
                         if (obj.action == "join") { // join
                             $('#app-message').text('Liitytään peliin.').removeClass("error success").addClass("text");
@@ -330,7 +330,7 @@ function onDeviceReady() {
 
         function joinedRoomListener() {
             if (User.lobby) {
-                console.log('ROOMID ' + roomID + ' GAMEID ' + gameID);
+            //    console.log('ROOMID ' + roomID + ' GAMEID ' + gameID);
                 //
                 $('#app-message').text('Avataan peliä...').removeClass("error text").addClass("success");
                 //

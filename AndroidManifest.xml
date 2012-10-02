@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="fi.dreamschool.sportti" android:versionCode="16" android:versionName="2.7.6">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="fi.dreamschool.sportti" android:versionCode="17" android:versionName="2.7.7">
 	<supports-screens android:largeScreens="true" android:normalScreens="true" android:smallScreens="true" android:resizeable="true" android:anyDensity="true"/>
 	<uses-permission android:name="android.permission.CAMERA"/>
 	<uses-permission android:name="android.permission.VIBRATE"/>
