@@ -499,7 +499,7 @@ function onDeviceReady() {
                     setTimeout(reset_in_air, 500);
                 }
 
-            } else if ((pituus < 18) && (pituus > 10)) {
+            } else if ((pituus < 18) && (pituus > 5)) {
                 // console.log('MOVE_MESSAGE _ RUN ' + pituus)
                 msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "MOVE_MESSAGE", roomID, null, "run;" + pituus);
             } else {
