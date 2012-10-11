@@ -303,20 +303,26 @@ function onDeviceReady() {
             //
             // roomID = $('#roomid').val();
             // Create Orbiter object
-            orbiter = new net.user1.orbiter.Orbiter();
-            // Register for connection events
-            orbiter.addEventListener(net.user1.orbiter.OrbiterEvent.READY, readyListener, this);
-            orbiter.addEventListener(net.user1.orbiter.OrbiterEvent.CLOSE, closeListener, this);
-            // Register for incoming messages from Union
-            msgManager = orbiter.getMessageManager();
-
-            if (typeof WebSocket === "undefined") {
-                console.log("SOCKET: NO SOCKET SUPPORT");
-            }
-
-            // orbiter.disableHTTPFailover();
-            // Connect to Union
-            orbiter.connect("socket.dreamschool.fi", 443);
+            
+            //if(typeof msgManager === "undefined") {
+            
+              orbiter = new net.user1.orbiter.Orbiter();
+              // Register for connection events
+              orbiter.addEventListener(net.user1.orbiter.OrbiterEvent.READY, readyListener, this);
+              orbiter.addEventListener(net.user1.orbiter.OrbiterEvent.CLOSE, closeListener, this);
+              // Register for incoming messages from Union
+              msgManager = orbiter.getMessageManager();
+  
+              if (typeof WebSocket === "undefined") {
+                  console.log("SOCKET: NO SOCKET SUPPORT");
+              }
+  
+              // orbiter.disableHTTPFailover();
+              // Connect to Union
+              //orbiter.connect("socket.dreamschool.fi", 443);
+              orbiter.connect("amc.pori.tut.fi/game-server/", 80);
+              
+            //}
         }
 
         function clearMessage() {
