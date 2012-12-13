@@ -319,8 +319,8 @@ function onDeviceReady() {
   
               // orbiter.disableHTTPFailover();
               // Connect to Union
-              //orbiter.connect("socket.dreamschool.fi", 443);
-              orbiter.connect("amc.pori.tut.fi/game-server/", 80);
+              orbiter.connect("socket.dreamschool.fi", 443);
+              //orbiter.connect("amc.pori.tut.fi/game-server/", 80);
               
             //}
         }
@@ -505,7 +505,7 @@ function onDeviceReady() {
                     setTimeout(reset_in_air, 500);
                 }
 
-            } else if ((pituus < 18) && (pituus > 5)) {
+            } else if ((pituus < 20) && (pituus > 5)) {
                 // console.log('MOVE_MESSAGE _ RUN ' + pituus)
                 msgManager.sendUPC(UPC.SEND_MESSAGE_TO_CLIENTS, "MOVE_MESSAGE", roomID, null, "run;" + pituus);
             } else {
